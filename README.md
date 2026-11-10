@@ -13,7 +13,7 @@
   - [Configuração de Chaves e APIs](#configuração-de-chaves-e-apis)
   - [Executando a Aplicação](#executando-a-aplicação)
 - [Próximos Passos (Roadmap)](#-próximos-passos-roadmap)
-- [Créditos e Contribuidores](#-créditos-e-contribuidores)
+- [Créditos e Instituição](#-créditos-e-instituição)
 
 ---
 
@@ -52,8 +52,8 @@ O visual do aplicativo é baseado em elementos de tecnologia e cultura de paz:
 
 ### Clonando o Repositório
 ```bash
-git clone https://github.com/safeherven/safeherven_app.git
-cd safeherven_app
+git clone https://github.com/albertomateus9/VozesLivres.git
+cd VozesLivres
 ```
 
 ### Instalando Dependências
@@ -111,14 +111,9 @@ flutter run
 
 ---
 
-## 🤝 Créditos e Contribuidores
+## 🤝 Créditos e Instituição
 
-Desenvolvido originalmente no projeto *Safe Herven* e evoluído no programa **Cultura de Paz, Ciência e Tecnologia - EETEPA Vilhena Alves**:
-
-- **Ida Delphine**
-- **Hawawou Oumarou**
-- **Petra Ukeh Agien**
-- **Tatiana Nsei**
+Desenvolvido para o projeto **Cultura de Paz, Ciência e Tecnologia - EETEPA Vilhena Alves**.
 
 ---
 
