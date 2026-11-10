@@ -5,7 +5,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:safeherven_app/blocs/application_bloc.dart';
 import 'package:safeherven_app/shared/bottom.dart';
-import 'package:flutter_config/flutter_config.dart';
 import 'package:safeherven_app/shared/appbar.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -24,29 +23,23 @@ class _PlacesScreenState extends State<PlacesScreen> {
   late StreamSubscription boundsSubscription;
   final _locationController = TextEditingController();
 
-   _checkStatus() async {
+  _checkStatus() async {
     var status = await Permission.location.status;
-    if (status.isGranted) {
-
-    } else if (status.isDenied) {
-      Map<Permission, PermissionStatus> status = await [
-        Permission.location,
-      ].request();
+    if (status.isDenied) {
+      await [Permission.location].request();
     }
     if (await Permission.location.isPermanentlyDenied) {
       openAppSettings();
     }
   }
 
-
   @override
   void initState() {
     _checkStatus();
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
-    // listen for a selected location
     locationSubscription = applicationBloc.selectedLocation.stream.listen((place) {
-      if (place != null) {
+      if (place != null && place.name != null) {
         _locationController.text = place.name!;
         _goToPlace(place);
       } else {
@@ -64,10 +57,9 @@ class _PlacesScreenState extends State<PlacesScreen> {
 
   @override
   void dispose() {
-    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
-    applicationBloc.dispose();
     boundsSubscription.cancel();
     locationSubscription.cancel();
+    _locationController.dispose();
     super.dispose();
   }
 
@@ -75,163 +67,162 @@ class _PlacesScreenState extends State<PlacesScreen> {
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
     return Scaffold(
-        appBar: SafeHervenAppBar("Find Places", isHome: false),
-        bottomNavigationBar: const MenuBottom(),
-        body: (applicationBloc.currentLocation == null)
-        ? const Center(child: CircularProgressIndicator(),)
-        : ListView(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                controller: _locationController,
-                textCapitalization: TextCapitalization.words,
-                decoration: const InputDecoration(
-                  hintText: "Search Location",
-                  suffixIcon: Icon(Icons.search),
-                ),
-                onChanged: (value) => applicationBloc.searchPLaces(value),
-                onTap: () => applicationBloc.clearSelectedLocation(),
-              ),
-            ),
-            Stack(
+      appBar: const SafeHervenAppBar("Locais Seguros", isHome: false),
+      bottomNavigationBar: const MenuBottom(currentIndex: 1),
+      body: (applicationBloc.currentLocation == null)
+          ? const Center(
+              child: CircularProgressIndicator(color: Color(0xFF0B2545)),
+            )
+          : ListView(
               children: [
-                SizedBox(
-                  height: 300,
-                  child: GoogleMap(
-                    markers: Set<Marker>.of(applicationBloc.markers),
-                    onMapCreated: (GoogleMapController controller){
-                      _mapController.complete(controller);
-                    },
-                    myLocationEnabled: true,
-                    initialCameraPosition: CameraPosition(
-                      target: LatLng(
-                        applicationBloc.currentLocation!.latitude,
-                        applicationBloc.currentLocation!.longitude,
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: TextField(
+                    controller: _locationController,
+                    textCapitalization: TextCapitalization.words,
+                    decoration: InputDecoration(
+                      hintText: "Buscar por localização ou cidade...",
+                      prefixIcon: const Icon(Icons.search, color: Color(0xFF0066CC)),
+                      suffixIcon: _locationController.text.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(Icons.clear, color: Colors.grey),
+                              onPressed: () {
+                                _locationController.clear();
+                                applicationBloc.clearSelectedLocation();
+                              },
+                            )
+                          : null,
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16.0),
+                        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
                       ),
-                      zoom: 11.0,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16.0),
+                        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16.0),
+                        borderSide: const BorderSide(color: Color(0xFF0066CC), width: 2),
+                      ),
+                    ),
+                    onChanged: (value) => applicationBloc.searchPLaces(value),
+                    onTap: () => applicationBloc.clearSelectedLocation(),
+                  ),
+                ),
+                Stack(
+                  children: [
+                    SizedBox(
+                      height: 320,
+                      child: GoogleMap(
+                        markers: Set<Marker>.of(applicationBloc.markers),
+                        onMapCreated: (GoogleMapController controller) {
+                          if (!_mapController.isCompleted) {
+                            _mapController.complete(controller);
+                          }
+                        },
+                        myLocationEnabled: true,
+                        initialCameraPosition: CameraPosition(
+                          target: LatLng(
+                            applicationBloc.currentLocation!.latitude,
+                            applicationBloc.currentLocation!.longitude,
+                          ),
+                          zoom: 12.0,
+                        ),
+                      ),
+                    ),
+                    if (applicationBloc.searchResults != null &&
+                        applicationBloc.searchResults!.isNotEmpty)
+                      Container(
+                        height: 320,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF0B2545).withOpacity(.85),
+                        ),
+                      ),
+                    if (applicationBloc.searchResults != null &&
+                        applicationBloc.searchResults!.isNotEmpty)
+                      SizedBox(
+                        height: 320,
+                        child: ListView.builder(
+                          itemCount: applicationBloc.searchResults?.length ?? 0,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              leading: const Icon(Icons.location_on, color: Color(0xFF0066CC)),
+                              title: Text(
+                                applicationBloc.searchResults![index].description,
+                                style: const TextStyle(color: Colors.white, fontSize: 14),
+                              ),
+                              onTap: () {
+                                applicationBloc.setSelectedLocation(
+                                  applicationBloc.searchResults![index].placeId,
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      )
+                  ],
+                ),
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
+                  child: Text(
+                    'Encontrar Local Seguro Mais Próximo',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF0B2545),
                     ),
                   ),
                 ),
-               if (applicationBloc.searchResults != null &&
-                   applicationBloc.searchResults!.isNotEmpty)
-               Container(
-                  height: 300,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(.6),
-                      backgroundBlendMode: BlendMode.darken
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+                  child: Wrap(
+                    spacing: 8.0,
+                    runSpacing: 4.0,
+                    children: [
+                      _buildChip('Hospital', 'hospital', applicationBloc),
+                      _buildChip('Delegacia de Polícia', 'police', applicationBloc),
+                      _buildChip('Igreja', 'church', applicationBloc),
+                      _buildChip('Mesquita', 'mosque', applicationBloc),
+                      _buildChip('Farmácia', 'pharmacy', applicationBloc),
+                      _buildChip('Agência de Viagens', 'travel_agency', applicationBloc),
+                      _buildChip('Assistência Jurídica', 'lawyer', applicationBloc),
+                      _buildChip('Caixa Eletrônico', 'atm', applicationBloc),
+                      _buildChip('Banco', 'bank', applicationBloc),
+                      _buildChip('Médico / Posto de Saúde', 'doctor', applicationBloc),
+                      _buildChip('Universidade', 'university', applicationBloc),
+                    ],
                   ),
                 ),
-                if (applicationBloc.searchResults != null &&
-                    applicationBloc.searchResults!.isNotEmpty)
-                SizedBox(
-                  height: 300,
-                  child: ListView.builder(
-                    itemCount: applicationBloc.searchResults?.length??0,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(
-                          applicationBloc.searchResults![index].description,
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                        onTap: () {
-                          applicationBloc.setSelectedLocation(
-                            applicationBloc.searchResults![index].placeId
-                          );
-                        },
-                      );
-                    },
-                  ),
-                )
+                const SizedBox(height: 20),
               ],
             ),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'Find Nearest Place',
-                style: TextStyle(
-                  fontSize: 25.0,
-                  fontWeight: FontWeight.bold
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Wrap(
-                spacing: 5.0,
-                children: [
-                  FilterChip(
-                    label: const Text('Hospital'),
-                    onSelected: (val) => applicationBloc.togglePlaceType('hospital', val),
-                    selected: applicationBloc.placeType == 'hospital',
-                    selectedColor: Colors.purple,
-                  ),
-                  FilterChip(
-                    label: const Text('Police Station'),
-                    onSelected: (val) => applicationBloc.togglePlaceType('police', val),
-                    selected: applicationBloc.placeType == 'police',
-                    selectedColor: Colors.purple,
-                  ),
-                  FilterChip(
-                    label: const Text('Church'),
-                    onSelected: (val) => applicationBloc.togglePlaceType('church', val),
-                    selected: applicationBloc.placeType == 'church',
-                    selectedColor: Colors.purple,
-                  ),
-                  FilterChip(
-                    label: const Text('Mosque'),
-                    onSelected: (val) => applicationBloc.togglePlaceType('mosque', val),
-                    selected: applicationBloc.placeType == 'mosque',
-                    selectedColor: Colors.purple,
-                  ),
-                  FilterChip(
-                    label: const Text('Pharmacy'),
-                    onSelected: (val) => applicationBloc.togglePlaceType('pharmacy', val),
-                    selected: applicationBloc.placeType == 'pharmacy',
-                    selectedColor: Colors.purple,
-                  ),
-                  FilterChip(
-                    label: const Text('Travel Agency'),
-                    onSelected: (val) => applicationBloc.togglePlaceType('travel_agency', val),
-                    selected: applicationBloc.placeType == 'travel_agency',
-                    selectedColor: Colors.purple,
-                  ),
-                  FilterChip(
-                    label: const Text('Lawyer'),
-                    onSelected: (val) => applicationBloc.togglePlaceType('lawyer', val),
-                    selected: applicationBloc.placeType == 'lawyer',
-                    selectedColor: Colors.purple,
-                  ),
-                  FilterChip(
-                    label: const Text('ATM'),
-                    onSelected: (val) => applicationBloc.togglePlaceType('atm', val),
-                    selected: applicationBloc.placeType == 'atm',
-                    selectedColor: Colors.purple,
-                  ),
-                  FilterChip(
-                    label: const Text('Bank'),
-                    onSelected: (val) => applicationBloc.togglePlaceType('bank', val),
-                    selected: applicationBloc.placeType == 'bank',
-                    selectedColor: Colors.purple,
-                  ),
-                  FilterChip(
-                    label: const Text('Doctor'),
-                    onSelected: (val) => applicationBloc.togglePlaceType('doctor', val),
-                    selected: applicationBloc.placeType == 'doctor',
-                    selectedColor: Colors.purple,
-                  ),
-                  FilterChip(
-                    label: const Text('University'),
-                    onSelected: (val) => applicationBloc.togglePlaceType('university', val),
-                    selected: applicationBloc.placeType == 'university',
-                    selectedColor: Colors.purple,
-                  ),
-                ],
-              ),
-            ),
-          ]
+    );
+  }
+
+  Widget _buildChip(String label, String type, ApplicationBloc bloc) {
+    final bool isSelected = bloc.placeType == type;
+    return FilterChip(
+      label: Text(
+        label,
+        style: TextStyle(
+          color: isSelected ? Colors.white : const Color(0xFF0B2545),
+          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
         ),
+      ),
+      selected: isSelected,
+      selectedColor: const Color(0xFF0B2545),
+      backgroundColor: Colors.white,
+      checkmarkColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(
+          color: isSelected ? const Color(0xFF0B2545) : const Color(0xFFCBD5E1),
+        ),
+      ),
+      onSelected: (val) => bloc.togglePlaceType(type, val),
     );
   }
 
@@ -241,10 +232,10 @@ class _PlacesScreenState extends State<PlacesScreen> {
       CameraUpdate.newCameraPosition(
         CameraPosition(
           target: LatLng(place.geometry.location.lat, place.geometry.location.lng),
-          zoom: 14
-        )
-      )
+          zoom: 14,
+        ),
+      ),
     );
   }
-
 }
+

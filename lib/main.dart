@@ -12,25 +12,44 @@ import 'package:safeherven_app/screens/alert.dart';
 import 'package:safeherven_app/screens/settings/settings.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(SafeHervenApp());
+  try {
+    await Firebase.initializeApp();
+  } catch (e) {
+    debugPrint("Firebase initializeApp error or offline fallback: $e");
+  }
+  runApp(VozesLivresApp());
 }
 
-class SafeHervenApp extends StatelessWidget {
-  SafeHervenApp({Key? key}) : super(key: key);
+class VozesLivresApp extends StatelessWidget {
+  VozesLivresApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (BuildContext context)  => ApplicationBloc(),
+      create: (BuildContext context) => ApplicationBloc(),
       child: MaterialApp(
+        title: 'Vozes Livres',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primarySwatch: Colors.purple,
+          useMaterial3: true,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color(0xFF0B2545),
+            primary: const Color(0xFF0B2545),
+            secondary: const Color(0xFF0066CC),
+            error: const Color(0xFFD32F2F),
+            surface: Colors.white,
+            background: const Color(0xFFF4F7FA),
+          ),
+          scaffoldBackgroundColor: const Color(0xFFF4F7FA),
           textTheme: GoogleFonts.jostTextTheme(
             Theme.of(context).textTheme,
+          ),
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Color(0xFF0B2545),
+            foregroundColor: Colors.white,
+            elevation: 2,
           ),
         ),
         initialRoute: '/',
@@ -41,10 +60,14 @@ class SafeHervenApp extends StatelessWidget {
           '/map': (context) => const PlacesScreen(),
           '/alert': (context) => const AlertScreen(),
           '/settings': (context) => const SettingsScreen(),
-          '/help': (context) => HelpScreen()
+          '/help': (context) => const HelpScreen()
         },
       ),
     );
   }
 }
+
+
+
+
 

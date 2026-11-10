@@ -9,9 +9,9 @@ class Place {
 
   factory Place.fromJson(Map<String, dynamic> parsedJson) {
     return Place(
-      geometry: Geometry.fromJson((parsedJson['geometry'])),
-      name: parsedJson['formatted_address'],
-      vicinity: parsedJson['vicinity']
+      geometry: Geometry.fromJson((parsedJson['geometry'] ?? {'location': {'lat': 0.0, 'lng': 0.0}})),
+      name: parsedJson['name'] ?? parsedJson['formatted_address'] ?? 'Local Próximo',
+      vicinity: parsedJson['vicinity'] ?? parsedJson['formatted_address'] ?? ''
     );
   }
 }

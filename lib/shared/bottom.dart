@@ -1,16 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterfire_ui/auth.dart';
 import 'package:safeherven_app/screens/chat.dart';
 import 'package:safeherven_app/screens/help.dart';
 import 'package:safeherven_app/screens/places.dart';
-import 'package:safeherven_app/screens/alert.dart';
 import 'package:safeherven_app/screens/home.dart';
-
+import 'package:safeherven_app/screens/wrapper.dart';
 
 class MenuBottom extends StatefulWidget {
+  final int currentIndex;
   const MenuBottom({
     Key? key,
+    this.currentIndex = 0,
   }) : super(key: key);
 
   @override
@@ -18,82 +18,101 @@ class MenuBottom extends StatefulWidget {
 }
 
 class _MenuBottomState extends State<MenuBottom> {
-  int _selectedIndex = 0;
+  late int _selectedIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.currentIndex;
+  }
 
   void _onItemTapped(int index) {
+    if (index == _selectedIndex) return;
     setState(() {
       _selectedIndex = index;
     });
-  }
 
+    switch (index) {
+      case 0:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => StreamBuilder<User?>(
+              stream: FirebaseAuth.instance.authStateChanges(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Wrapper();
+                }
+                return HomeScreen(user: snapshot.data!);
+              },
+            ),
+          ),
+        );
+        break;
+      case 1:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const PlacesScreen()),
+        );
+        break;
+      case 2:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HelpScreen()),
+        );
+        break;
+      case 3:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const ChatScreen()),
+        );
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      onTap: (int index) {
-        switch (index) {
-          case 0:
-            _onItemTapped(0);
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => StreamBuilder<User?>(
-                  stream: FirebaseAuth.instance.authStateChanges(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return const SignInScreen(providerConfigs: [
-                        EmailProviderConfiguration(),
-                      ],);
-                    }
-                    return HomeScreen(user: snapshot.data!);
-                  }
-                ),
-              ),
-            );
-            break;
-          case 1:
-            _onItemTapped(1);
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const PlacesScreen()),
-            );
-            break;
-          case 2:
-            _onItemTapped(2);
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const HelpScreen()),
-            );
-            break;
-          case 3:
-            _onItemTapped(3);
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ChatScreen()),
-            );
-            break;
-        }
-      },
-      items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home, color: _selectedIndex == 0 ? Colors.purple : Colors.grey,),
-            label: 'Home',
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF0B2545).withOpacity(0.12),
+            blurRadius: 12,
+            offset: const Offset(0, -3),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.location_on, color: _selectedIndex == 1 ? Colors.purple : Colors.grey,),
-            label: 'Places',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.health_and_safety, color: _selectedIndex == 2 ? Colors.purple : Colors.grey,),
-            label: 'Get Help',
-          ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.chat, color: _selectedIndex == 3 ? Colors.purple : Colors.grey,),
-          label: 'Chat',
-        ),
         ],
-      // currentIndex: _selectedIndex,
-      // selectedItemColor: Colors.purple[500],
+      ),
+      child: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Colors.white,
+        selectedItemColor: const Color(0xFF0B2545),
+        unselectedItemColor: Colors.grey.shade600,
+        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+        unselectedLabelStyle: const TextStyle(fontSize: 11),
+        onTap: _onItemTapped,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_rounded),
+            label: 'Início',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.location_on_rounded),
+            label: 'Locais',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.health_and_safety_rounded),
+            label: 'Ajuda',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat_bubble_rounded),
+            label: 'Chat',
+          ),
+        ],
+      ),
     );
   }
 }
+
+

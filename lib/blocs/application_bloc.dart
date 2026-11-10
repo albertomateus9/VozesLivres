@@ -22,7 +22,7 @@ class ApplicationBloc with ChangeNotifier {
   // Variables
   Position? currentLocation;
   List<PlaceSearch>? searchResults;
-  StreamController<Place> selectedLocation = StreamController<Place>.broadcast();
+  StreamController<Place?> selectedLocation = StreamController<Place?>.broadcast();
   StreamController<LatLngBounds> bounds = StreamController<LatLngBounds>.broadcast();
   Place? selectedLocationStatic;
   String? placeType;
@@ -32,36 +32,70 @@ class ApplicationBloc with ChangeNotifier {
     setCurrentLocation();
   }
 
-  Place? get event => null;
-
   setCurrentLocation() async {
-    currentLocation = await geolocatorService.getCurrentLocation();
-    selectedLocationStatic = Place(
-        geometry: Geometry(
-            location: Location(
-                lat: currentLocation!.latitude,
-                lng: currentLocation!.longitude)
-        ),
-        name: null,
-        vicinity: "Bamenda"
-    );
+    try {
+      currentLocation = await geolocatorService.getCurrentLocation();
+      selectedLocationStatic = Place(
+          geometry: Geometry(
+              location: Location(
+                  lat: currentLocation!.latitude,
+                  lng: currentLocation!.longitude)
+          ),
+          name: "Sua Localização",
+          vicinity: "Sua Posição Atual"
+      );
+    } catch (e) {
+      // Fallback default coordinates if location is disabled
+      currentLocation = Position(
+        longitude: -46.633308,
+        latitude: -23.550520,
+        timestamp: DateTime.now(),
+        accuracy: 0.0,
+        altitude: 0.0,
+        heading: 0.0,
+        speed: 0.0,
+        speedAccuracy: 0.0,
+      );
+      selectedLocationStatic = Place(
+          geometry: Geometry(
+              location: Location(
+                  lat: currentLocation!.latitude,
+                  lng: currentLocation!.longitude)
+          ),
+          name: "São Paulo, SP",
+          vicinity: "Localização Padrão"
+      );
+    }
     notifyListeners();
   }
+
   searchPLaces(String searchTerm) async {
-     searchResults = await placesService.getAutoComplete(searchTerm) as List<PlaceSearch>;
-     notifyListeners();
+    if (searchTerm.trim().isEmpty) {
+      searchResults = null;
+      notifyListeners();
+      return;
+    }
+    try {
+      searchResults = await placesService.getAutoComplete(searchTerm) as List<PlaceSearch>;
+    } catch (e) {
+      searchResults = [];
+    }
+    notifyListeners();
   }
   
   setSelectedLocation(String? placeId) async {
-    var sLocation = await placesService.getPlace(placeId);
-    selectedLocation.add(await placesService.getPlace(placeId));
-    selectedLocationStatic = sLocation;
-    searchResults = null;
+    try {
+      var sLocation = await placesService.getPlace(placeId);
+      selectedLocation.add(sLocation);
+      selectedLocationStatic = sLocation;
+      searchResults = null;
+    } catch (e) {
+      searchResults = null;
+    }
     notifyListeners();
   }
 
   clearSelectedLocation() {
-    selectedLocation.add(event!);
     selectedLocationStatic = null;
     searchResults = null;
     placeType = null;
@@ -75,26 +109,34 @@ class ApplicationBloc with ChangeNotifier {
       placeType = null;
     }
 
-    if (placeType != null) {
-      var places = await placesService.getPlaces(
-          selectedLocationStatic!.geometry.location.lat,
-          selectedLocationStatic!.geometry.location.lng,
-          placeType!,
-      );
+    if (placeType != null && selectedLocationStatic != null) {
+      try {
+        var places = await placesService.getPlaces(
+            selectedLocationStatic!.geometry.location.lat,
+            selectedLocationStatic!.geometry.location.lng,
+            placeType!,
+        );
 
-      markers = [];
+        markers = [];
 
-      if (places.isNotEmpty) {
-        var newMarker = markerService.createMarkerFromPlace(places[0]);
-        markers.add(newMarker);
+        if (places.isNotEmpty) {
+          for (var place in places) {
+            markers.add(markerService.createMarkerFromPlace(place));
+          }
+        }
+
+        var locationMarker = markerService.createMarkerFromPlace(selectedLocationStatic!);
+        markers.add(locationMarker);
+
+        var _bounds = markerService.bounds(Set<Marker>.of(markers));
+        if (_bounds != null) {
+          bounds.add(_bounds);
+        }
+      } catch (e) {
+        markers = [];
       }
-
-      var locationMarker = markerService.createMarkerFromPlace(selectedLocationStatic!);
-      markers.add(locationMarker);
-
-      var _bounds = markerService.bounds(Set<Marker>.of(markers));
-      bounds.add(_bounds!);
-
+    } else {
+      markers = [];
     }
 
     notifyListeners();
@@ -103,6 +145,7 @@ class ApplicationBloc with ChangeNotifier {
   @override
   void dispose() {
     selectedLocation.close();
+    bounds.close();
     super.dispose();
   }
 

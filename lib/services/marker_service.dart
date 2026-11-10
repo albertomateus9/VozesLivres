@@ -21,14 +21,14 @@ class MarkerService {
   }
 
   Marker createMarkerFromPlace(Place place) {
-    var markerId = place.name;
+    var markerId = place.name ?? place.vicinity ?? 'marker_${place.geometry.location.lat}_${place.geometry.location.lng}';
 
     return Marker(
-      markerId: MarkerId(markerId!),
+      markerId: MarkerId(markerId),
       draggable: false,
       infoWindow: InfoWindow(
-        title: place.name,
-        snippet: place.vicinity
+        title: place.name ?? 'Local Seguro',
+        snippet: place.vicinity ?? ''
       ),
       position: LatLng(place.geometry.location.lat, place.geometry.location.lng)
     );

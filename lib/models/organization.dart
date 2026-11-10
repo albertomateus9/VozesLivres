@@ -8,10 +8,19 @@ class Organization {
   String? website;
   List? votes;
 
-  Organization();
+  Organization({
+    this.name,
+    this.description,
+    this.country,
+    this.location,
+    this.telephone,
+    this.email,
+    this.website,
+    this.votes,
+  });
 
-  Map<String, dynamic> toJson() =>
-      {'name': name,
+  Map<String, dynamic> toJson() => {
+        'name': name,
         'description': description,
         'country': country,
         'location': location,
@@ -21,13 +30,16 @@ class Organization {
         'votes': votes
       };
 
-  Organization.fromSnapshot(snapshot)
-      : name = snapshot.data()['name'],
-        description = snapshot.data()['description'],
-        country = snapshot.data()['country'],
-        location = snapshot.data()['location'],
-        telephone = snapshot.data()['telephone'],
-        email = snapshot.data()['email'],
-        website = snapshot.data()['website'],
-        votes = snapshot.data()['votes'];
+  Organization.fromSnapshot(snapshot) {
+    final Map<String, dynamic> data =
+        (snapshot.data() as Map<String, dynamic>?) ?? {};
+    name = data['name'] ?? 'Organização de Apoio';
+    description = data['description'] ?? 'Sem descrição disponível.';
+    country = data['country'] ?? 'Brasil';
+    location = data['location'] ?? 'Nacional';
+    telephone = data['telephone'] ?? '180';
+    email = data['email'] ?? 'contato@safeherven.org';
+    website = data['website'] ?? 'https://www.gov.br/mdh/pt-br/assuntos/violencia-contra-a-mulher';
+    votes = data['votes'] is List ? data['votes'] : [0];
+  }
 }

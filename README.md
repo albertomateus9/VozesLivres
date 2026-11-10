@@ -1,73 +1,125 @@
-# Safe Herven
+# Vozes Livres 🛡️
 
-Safe Herven is a mobile app for victims/survivors of sexual abuse, GBV, domestic abuse, harmful practices like FGM and child marriage as well as other traumatic events that can lead to anxiety and depression.
-![image](https://user-images.githubusercontent.com/71177851/161199504-91c43872-1a80-439f-a831-1cfa188f1a58.png)
+**Vozes Livres** é um aplicativo mobile desenvolvido para oferecer acolhimento, orientação e segurança a pessoas em situação de vulnerabilidade, vítimas de violência de gênero, abusos, agressões ou experiências traumáticas. O projeto combina **Cultura de Paz, Ciência e Tecnologia** para proporcionar um refúgio seguro e confidencial.
 
+---
 
-## Introduction 
+## 📌 Sumário
+- [Visão Geral](#-visão-geral)
+- [Principais Funcionalidades](#-principais-funcionalidades)
+- [Identidade Visual](#-identidade-visual)
+- [Como Executar o Projeto](#-como-executar-o-projeto)
+  - [Pré-requisitos](#pré-requisitos)
+  - [Configuração de Chaves e APIs](#configuração-de-chaves-e-apis)
+  - [Executando a Aplicação](#executando-a-aplicação)
+- [Próximos Passos (Roadmap)](#-próximos-passos-roadmap)
+- [Créditos e Contribuidores](#-créditos-e-contribuidores)
 
-Our motivation is the desire to provide a place where victims of gender-based violence can air out their minds in all safety and without being judged considering the fact that some victims do not have anyone in whom they can confide. Also, a lot of victims do not know where they can get the necessary help so we have provided a list of organisations whose goals are to help victims.
+---
 
-Download the app(.apk) [here](https://drive.google.com/file/d/15rkrBCESMkH1BCBhuALRlqTSCJWyWUyn/view?usp=sharing).
+## 🌟 Visão Geral
 
-**Disclaimer:** The iOS version isn't available yet but it's coming soon.
+Nossa motivação é disponibilizar uma ferramenta acessível, confidencial e sem julgamentos para quem precisa desabafar, buscar orientação ou encontrar socorro rápido. Muitas pessoas que enfrentam situações de risco não sabem a quem recorrer nem onde encontrar instituições legítimas de proteção. O **Vozes Livres** conecta essas pessoas diretamente a redes de apoio, pontos de acolhimento e canais oficiais de emergência.
 
-## Key Features
-- A friendly chat bot if you just need someone to talk to or want to know the next steps or what to do if faced with any of those mentioned issues.
+---
 
-- A map with common places you'll most likely need to go to and with just one tap, you find the closest place to you.
+## 🚀 Principais Funcionalidades
 
-- A curated list of non-governmental organisations, foundations and frontline workers with their details. These NGOs are out to help such people but     sometimes they don't even know where to go to and which is legit.
+- 💬 **Assistente Virtual de Apoio (Angel)**: Chatbot interativo para escuta atenta, desabafo sigiloso e suporte inicial.
+- 🗺️ **Mapa de Locais Seguros**: Mapeamento com geolocalização dos pontos de apoio mais próximos (Hospitais, Delegacias, Farmácias, Abrigos e Postos de Saúde) com navegação rápida.
+- 🏥 **Rede de Apoio & ONGs**: Lista curada de ONGs e serviços públicos (Ligue 180, Mapa do Acolhimento, Instituto Maria da Penha, CVV) com contatos, e-mails, endereços e links úteis.
+- 🚨 **Canais de Emergência Direta**: Acesso rápido com um toque aos números de socorro imediato (**180** - Mulher, **190** - Polícia Militar, **192** - SAMU, **188** - CVV).
+- 🔒 **Modo Anônimo**: Navegação e login simplificado sem necessidade de exposição de dados pessoais.
 
-![image](https://github.com/TatianaNsei/safeherven_app/blob/rm_update/assets/images/readme_images/safeherven1.png)
+---
 
-# How to build
-Follow [this](https://docs.flutter.dev/get-started/install) on how to install and set up flutter for mobile development. Clone the repository: ``git clone https://github.com/safeherven/safeherven_app.git``
+## 🎨 Identidade Visual
 
-## Requirements
+O visual do aplicativo é baseado em elementos de tecnologia e cultura de paz:
+- **Azul Marinho (`#0B2545`)**: Transmite confiança, estabilidade e proteção.
+- **Azul Tecnologia (`#0066CC`)**: Traz clareza e acessibilidade aos recursos.
+- **Vermelho Carmim (`#D32F2F`)**: Destaque tático para emergências e alertas.
+- **Branco/Cinza Claro (`#F4F7FA`)**: Proporciona legibilidade e visual limpo.
 
-After cloning the repository, run ``flutter pub get`` to downloand all the dependencies.
+---
 
-## Steps to run
-- Open android studio
-- Get Google Maps API Key
-- Add the API key to your flutter app in the application manifest (android/apps/src/main/AndroidManifest.xml), as follows: git clone 
+## 🛠️ Como Executar o Projeto
 
+### Pré-requisitos
+- [Flutter SDK](https://docs.flutter.dev/get-started/install) (versão `>=2.17.0`)
+- [Android Studio](https://developer.android.com/studio) ou VS Code com extensão do Flutter/Dart
+- Emulador Android/iOS ou dispositivo físico com modo de depuração USB ativo
+
+### Clonando o Repositório
+```bash
+git clone https://github.com/safeherven/safeherven_app.git
+cd safeherven_app
 ```
-<manifest ...
-  <application ...
-    <meta-data android:name="com.google.android.geo.API_KEY"
-               android:value="YOUR ANDROID API KEY HERE"/>
-  ```   
-- Also add your API key in `lib/services/places_service.dart`.
-- Create a Firebase android app using the [Firebase Console](https://console.firebase.google.com/).
-- Generate the `google-services.json` (on "Project settings" menu) and copy it to the `android/app` directory.
-- Install the **Firebase CLI** [here](https://firebase.google.com/docs/cli).
-- Run `dart pub global activate flutterfire_cli` in the project.
-- Run `flutterfire configure`. This will start up a command line interface for you to select the Firebase project you want linked to your Flutter project. After it is complete, a `firebase_options.dart` file will be generated in your `lib` folder.
-- Be sure to add your `client id` in `lib/screens/wrapper.dart`.
-- Create a **DialogFlow agent** at the [Dialogflow Console](https://dialogflow.cloud.google.com/).
-- Configure it to enable beta features as well as Auto Speech Adaptation.
-- Go to your [Google Cloud Console](https://console.cloud.google.com/) and search for `Dialogflow API` in the top toolbar.
-- Follow this [codelab](https://codelabs.developers.google.com/codelabs/dialogflow-flutter#1) at the **Google Cloud: Get a service account** section in order to get a service account.
-- Once your `credentials.json` file is downloaded, add it to the root of the `assets` folder.
-- From your `credentials.json` file, 
-- Run the code on Android studio and view the app on an emulator of your choice or mobile device. You can also run the app from the terminal using: ``flutter run``
 
-### TODOs
-- Train the chatbot more to understand a wide variety of intents and make smarter responses.
-- Add safe space forums where survivors/victims of similar trauma can communicate with each other.
-- Add more NGOs to Firestore.
-- Add feature for victims to report cases.
-- Enable users to upvote and rank NGOs based on the number of upvotes.
-- Add psychotherapists to the platform.
+### Instalando Dependências
+```bash
+flutter pub get
+```
 
+---
 
-A Safe Haven for HER...
+### Configuração de Chaves e APIs
 
+#### 1. Google Maps API Key
+- Obtenha uma chave no [Google Cloud Console](https://console.cloud.google.com/).
+- Adicione a chave no arquivo `android/app/src/main/AndroidManifest.xml`:
+  ```xml
+  <meta-data
+      android:name="com.google.android.geo.API_KEY"
+      android:value="SUA_CHAVE_GOOGLE_MAPS_AQUI"/>
+  ```
+- Insira também a chave no serviço de locais em `lib/services/places_service.dart`.
 
-## Contributors
-- Ida Delphine 
-- Hawawou Oumarou
-- Petra Ukeh Agien
-- Tatiana Nsei 
+#### 2. Firebase
+- Crie um projeto no [Console do Firebase](https://console.firebase.google.com/).
+- Baixe o arquivo `google-services.json` e adicione no diretório `android/app/`.
+- Caso utilize a CLI do FlutterFire:
+  ```bash
+  dart pub global activate flutterfire_cli
+  flutterfire configure
+  ```
+
+#### 3. Dialogflow (Chatbot)
+- Configure o agente no [Console do Dialogflow](https://dialogflow.cloud.google.com/).
+- Gere a chave de conta de serviço no Google Cloud em formato JSON.
+- Adicione o arquivo de credenciais como `assets/credentials.json`.
+
+---
+
+### Executando a Aplicação
+
+Para iniciar o aplicativo no emulador ou dispositivo conectado, execute:
+
+```bash
+flutter run
+```
+
+---
+
+## 📌 Próximos Passos (Roadmap)
+
+- [ ] Treinamento contínuo da IA do chatbot para ampliar o vocabulário e a empatia nas respostas.
+- [ ] Fóruns de acolhimento seguro para troca de experiências entre sobreviventes.
+- [ ] Expansão da base de dados de ONGs em todo o território nacional.
+- [ ] Botão de pânico e compartilhamento de localização em tempo real com contatos de confiança.
+- [ ] Mapeamento de profissionais de psicoterapia parceiros.
+
+---
+
+## 🤝 Créditos e Contribuidores
+
+Desenvolvido originalmente no projeto *Safe Herven* e evoluído no programa **Cultura de Paz, Ciência e Tecnologia - EETEPA Vilhena Alves**:
+
+- **Ida Delphine**
+- **Hawawou Oumarou**
+- **Petra Ukeh Agien**
+- **Tatiana Nsei**
+
+---
+
+> *Vozes Livres — Abrace sua liberdade com segurança e proteção.* 🕊️
