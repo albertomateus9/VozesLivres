@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,18 +11,18 @@ import 'package:safeherven_app/screens/alert.dart';
 import 'package:safeherven_app/screens/settings/settings.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-Future main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
     await Firebase.initializeApp();
   } catch (e) {
     debugPrint("Firebase initializeApp error or offline fallback: $e");
   }
-  runApp(VozesLivresApp());
+  runApp(const VozesLivresApp());
 }
 
 class VozesLivresApp extends StatelessWidget {
-  VozesLivresApp({Key? key}) : super(key: key);
+  const VozesLivresApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +39,6 @@ class VozesLivresApp extends StatelessWidget {
             secondary: const Color(0xFF0066CC),
             error: const Color(0xFFD32F2F),
             surface: Colors.white,
-            background: const Color(0xFFF4F7FA),
           ),
           scaffoldBackgroundColor: const Color(0xFFF4F7FA),
           textTheme: GoogleFonts.jostTextTheme(
@@ -60,14 +58,10 @@ class VozesLivresApp extends StatelessWidget {
           '/map': (context) => const PlacesScreen(),
           '/alert': (context) => const AlertScreen(),
           '/settings': (context) => const SettingsScreen(),
-          '/help': (context) => const HelpScreen()
+          '/help': (context) => const HelpScreen(),
         },
       ),
     );
   }
 }
-
-
-
-
 

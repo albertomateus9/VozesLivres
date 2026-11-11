@@ -30,7 +30,7 @@ class Organization {
         'votes': votes
       };
 
-  Organization.fromSnapshot(snapshot) {
+  Organization.fromSnapshot(dynamic snapshot) {
     final Map<String, dynamic> data =
         (snapshot.data() as Map<String, dynamic>?) ?? {};
     name = data['name'] ?? 'Organização de Apoio';

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
@@ -32,7 +31,7 @@ class ApplicationBloc with ChangeNotifier {
     setCurrentLocation();
   }
 
-  setCurrentLocation() async {
+  Future<void> setCurrentLocation() async {
     try {
       currentLocation = await geolocatorService.getCurrentLocation();
       selectedLocationStatic = Place(
@@ -55,6 +54,8 @@ class ApplicationBloc with ChangeNotifier {
         heading: 0.0,
         speed: 0.0,
         speedAccuracy: 0.0,
+        altitudeAccuracy: 0.0,
+        headingAccuracy: 0.0,
       );
       selectedLocationStatic = Place(
           geometry: Geometry(
@@ -69,7 +70,7 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  searchPLaces(String searchTerm) async {
+  Future<void> searchPLaces(String searchTerm) async {
     if (searchTerm.trim().isEmpty) {
       searchResults = null;
       notifyListeners();
@@ -83,7 +84,7 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
   
-  setSelectedLocation(String? placeId) async {
+  Future<void> setSelectedLocation(String? placeId) async {
     try {
       var sLocation = await placesService.getPlace(placeId);
       selectedLocation.add(sLocation);
@@ -95,14 +96,14 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  clearSelectedLocation() {
+  void clearSelectedLocation() {
     selectedLocationStatic = null;
     searchResults = null;
     placeType = null;
     notifyListeners();
   }
 
-  togglePlaceType(String value, bool selected) async {
+  Future<void> togglePlaceType(String value, bool selected) async {
     if (selected) {
       placeType = value;
     } else {
@@ -128,9 +129,9 @@ class ApplicationBloc with ChangeNotifier {
         var locationMarker = markerService.createMarkerFromPlace(selectedLocationStatic!);
         markers.add(locationMarker);
 
-        var _bounds = markerService.bounds(Set<Marker>.of(markers));
-        if (_bounds != null) {
-          bounds.add(_bounds);
+        var calculatedBounds = markerService.bounds(Set<Marker>.of(markers));
+        if (calculatedBounds != null) {
+          bounds.add(calculatedBounds);
         }
       } catch (e) {
         markers = [];

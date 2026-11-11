@@ -9,9 +9,9 @@ import 'package:safeherven_app/screens/wrapper.dart';
 class MenuBottom extends StatefulWidget {
   final int currentIndex;
   const MenuBottom({
-    Key? key,
+    super.key,
     this.currentIndex = 0,
-  }) : super(key: key);
+  });
 
   @override
   State<MenuBottom> createState() => _MenuBottomState();
@@ -77,7 +77,7 @@ class _MenuBottomState extends State<MenuBottom> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF0B2545).withOpacity(0.12),
+            color: const Color(0xFF0B2545).withValues(alpha: 0.12),
             blurRadius: 12,
             offset: const Offset(0, -3),
           ),

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:safeherven_app/screens/chat.dart';
 import 'package:safeherven_app/screens/help.dart';
 import 'package:safeherven_app/screens/places.dart';
-import 'package:safeherven_app/screens/alert.dart';
 import 'package:safeherven_app/shared/drawer.dart';
 import 'package:safeherven_app/shared/bottom.dart';
 import 'package:safeherven_app/shared/appbar.dart';
@@ -12,7 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 /// Tela inicial da aplicação Vozes Livres Escolar.
 /// Acolhimento, prevenção ao bullying e proteção a estudantes e menores.
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key, required this.user}) : super(key: key);
+  const HomeScreen({super.key, required this.user});
 
   /// Usuário atualmente autenticado via Firebase.
   final User user;
@@ -20,12 +19,15 @@ class HomeScreen extends StatelessWidget {
   Future<void> _callEmergency100(BuildContext context) async {
     final Uri uri = Uri.parse("tel:100");
     try {
-      if (!await launchUrl(uri)) {
+      final launched = await launchUrl(uri);
+      if (!context.mounted) return;
+      if (!launched) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Não foi possível realizar chamada para o Ligue 100")),
         );
       }
     } catch (e) {
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Erro ao discar: $e")),
       );
@@ -63,7 +65,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF0B2545).withOpacity(0.4),
+                    color: const Color(0xFF0B2545).withValues(alpha: 0.4),
                     offset: const Offset(0.0, 4.0),
                     blurRadius: 10.0,
                   ),
@@ -125,7 +127,7 @@ class HomeScreen extends StatelessWidget {
                   border: Border.all(color: const Color(0xFFE2E8F0), width: 1),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF0B2545).withOpacity(0.08),
+                      color: const Color(0xFF0B2545).withValues(alpha: 0.08),
                       blurRadius: 15,
                       offset: const Offset(0, 5),
                     ),
@@ -227,7 +229,7 @@ class HomeScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF0B2545).withOpacity(0.3),
+                            color: const Color(0xFF0B2545).withValues(alpha: 0.3),
                             blurRadius: 8,
                             offset: const Offset(0, 4),
                           ),
@@ -287,7 +289,7 @@ class HomeScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF0066CC).withOpacity(0.3),
+                            color: const Color(0xFF0066CC).withValues(alpha: 0.3),
                             blurRadius: 8,
                             offset: const Offset(0, 4),
                           ),
@@ -347,7 +349,7 @@ class HomeScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
+                            color: Colors.black.withValues(alpha: 0.2),
                             blurRadius: 8,
                             offset: const Offset(0, 4),
                           ),
@@ -395,7 +397,7 @@ class HomeScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFFD32F2F).withOpacity(0.4),
+                          color: const Color(0xFFD32F2F).withValues(alpha: 0.4),
                           blurRadius: 8,
                           offset: const Offset(0, 3),
                         ),

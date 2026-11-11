@@ -6,7 +6,7 @@ import '../shared/appbar.dart';
 import '../shared/bottom.dart';
 
 class HelpScreen extends StatefulWidget {
-  const HelpScreen({Key? key}) : super(key: key);
+  const HelpScreen({super.key});
 
   @override
   State<HelpScreen> createState() => _HelpScreenState();
@@ -124,8 +124,8 @@ class _HelpScreenState extends State<HelpScreen> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14.0),
               child: Column(
-                children: const [
-                  Text(
+                children: [
+                  const Text(
                     "Organizações de Apoio & ONGs",
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -134,13 +134,13 @@ class _HelpScreenState extends State<HelpScreen> {
                       color: Color(0xFF0B2545),
                     ),
                   ),
-                  SizedBox(height: 4),
-                  Text(
+                  const SizedBox(height: 4),
+                  const Text(
                     "Lista selecionada de instituições com suporte gratuito, apoio psicológico, orientação jurídica e proteção.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 13,
-                      color: Colors.black70,
+                      color: Colors.black54,
                       height: 1.3,
                     ),
                   ),

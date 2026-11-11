@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:safeherven_app/models/geometry.dart';
 import 'package:safeherven_app/models/location.dart';

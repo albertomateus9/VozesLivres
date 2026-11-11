@@ -11,10 +11,10 @@ import 'package:permission_handler/permission_handler.dart';
 import '../models/place.dart';
 
 class PlacesScreen extends StatefulWidget {
-  const PlacesScreen({Key? key}) : super(key: key);
+  const PlacesScreen({super.key});
 
   @override
-  _PlacesScreenState createState() => _PlacesScreenState();
+  State<PlacesScreen> createState() => _PlacesScreenState();
 }
 
 class _PlacesScreenState extends State<PlacesScreen> {
@@ -23,7 +23,7 @@ class _PlacesScreenState extends State<PlacesScreen> {
   late StreamSubscription boundsSubscription;
   final _locationController = TextEditingController();
 
-  _checkStatus() async {
+  Future<void> _checkStatus() async {
     var status = await Permission.location.status;
     if (status.isDenied) {
       await [Permission.location].request();
@@ -138,7 +138,7 @@ class _PlacesScreenState extends State<PlacesScreen> {
                         height: 320,
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF0B2545).withOpacity(.85),
+                          color: const Color(0xFF0B2545).withValues(alpha: .85),
                         ),
                       ),
                     if (applicationBloc.searchResults != null &&

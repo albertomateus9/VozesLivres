@@ -8,17 +8,20 @@ import 'package:safeherven_app/shared/appbar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AlertScreen extends StatelessWidget {
-  const AlertScreen({Key? key}) : super(key: key);
+  const AlertScreen({super.key});
 
   Future<void> _makeCall(String number, BuildContext context) async {
     final Uri uri = Uri.parse("tel:$number");
     try {
-      if (!await launchUrl(uri)) {
+      final launched = await launchUrl(uri);
+      if (!context.mounted) return;
+      if (!launched) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Não foi possível ligar para $number")),
         );
       }
     } catch (e) {
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Erro ao realizar chamada: $e")),
       );
@@ -67,7 +70,7 @@ class AlertScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFFD32F2F).withOpacity(0.3),
+                    color: const Color(0xFFD32F2F).withValues(alpha: 0.3),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -174,13 +177,13 @@ class AlertScreen extends StatelessWidget {
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: color.withOpacity(0.3), width: 1),
+        side: BorderSide(color: color.withValues(alpha: 0.3), width: 1),
       ),
       elevation: 2,
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         leading: CircleAvatar(
-          backgroundColor: color.withOpacity(0.1),
+          backgroundColor: color.withValues(alpha: 0.1),
           child: Icon(icon, color: color),
         ),
         title: Text(

@@ -12,17 +12,16 @@ class SafeHervenAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   const SafeHervenAppBar(
     this.title, {
-    Key? key,
+    super.key,
     required this.isHome,
-  })  : preferredSize = const Size.fromHeight(56.0),
-        super(key: key);
+  })  : preferredSize = const Size.fromHeight(56.0);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       elevation: 3,
       backgroundColor: const Color(0xFF0B2545),
-      shadowColor: const Color(0xFF0B2545).withOpacity(0.4),
+      shadowColor: const Color(0xFF0B2545).withValues(alpha: 0.4),
       centerTitle: isHome ? true : false,
       title: isHome
           ? Image.asset('assets/images/logos/white.png', height: 40)

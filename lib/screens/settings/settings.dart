@@ -5,7 +5,7 @@ import 'package:safeherven_app/screens/chat.dart';
 import 'package:safeherven_app/shared/appbar.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+  const SettingsScreen({super.key});
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -87,7 +87,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   secondary: const Icon(Icons.notifications_active_outlined, color: Color(0xFF0B2545)),
                   title: const Text("Notificações de Alerta"),
                   subtitle: const Text("Receber avisos e atualizações de segurança"),
-                  activeColor: const Color(0xFF0066CC),
+                  activeThumbColor: const Color(0xFF0066CC),
                   value: _notificationsEnabled,
                   onChanged: (val) {
                     setState(() {

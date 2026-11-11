@@ -7,6 +7,7 @@
 ## 📌 Sumário
 - [Visão Geral](#-visão-geral)
 - [Principais Funcionalidades](#-principais-funcionalidades)
+- [Telas e Demonstração do Aplicativo](#-telas-e-demonstração-do-aplicativo)
 - [Identidade Visual](#-identidade-visual)
 - [Como Executar o Projeto](#-como-executar-o-projeto)
   - [Pré-requisitos](#pré-requisitos)
@@ -28,8 +29,34 @@ Nossa motivação é disponibilizar uma ferramenta acessível, confidencial e se
 - 💬 **Assistente Virtual de Apoio (Angel)**: Chatbot interativo para escuta atenta, desabafo sigiloso e suporte inicial.
 - 🗺️ **Mapa de Locais Seguros**: Mapeamento com geolocalização dos pontos de apoio mais próximos (Hospitais, Delegacias, Farmácias, Abrigos e Postos de Saúde) com navegação rápida.
 - 🏥 **Rede de Apoio & ONGs**: Lista curada de ONGs e serviços públicos (Ligue 180, Mapa do Acolhimento, Instituto Maria da Penha, CVV) com contatos, e-mails, endereços e links úteis.
-- 🚨 **Canais de Emergência Direta**: Acesso rápido com um toque aos números de socorro imediato (**180** - Mulher, **190** - Polícia Militar, **192** - SAMU, **188** - CVV).
-- 🔒 **Modo Anônimo**: Navegação e login simplificado sem necessidade de exposição de dados pessoais.
+- 🚨 **Canais de Emergência Direta**: Acesso rápido com um toque aos números de socorro imediato (**180** - Mulher, **190** - Polícia Militar, **192** - SAMU, **188** - CVV, **100** - Direitos Humanos).
+- 🔒 **Modo Anônimo e Convidado**: Navegação e login simplificado sem necessidade de exposição de dados pessoais.
+
+---
+
+## 📱 Telas e Demonstração do Aplicativo
+
+Abaixo estão as capturas de tela reais da aplicação em execução no emulador Android, ilustrando a interface e o fluxo do usuário:
+
+| 1. Autenticação & Modo Anônimo | 2. Início / Painel de Acolhimento |
+| :---: | :---: |
+| <img src="assets/images/readme_images/01_tela_login.png" width="280" alt="Tela de Autenticação e Entrada Anônima" /> | <img src="assets/images/readme_images/02_tela_home.png" width="280" alt="Tela Inicial / Home" /> |
+| **Login e Privacidade**: Opções de login tradicional, entrada anônima ou acesso como convidado sem expor identidade. | **Painel Principal**: Saudação acolhedora, cards rápidos para chatbot, conselho tutelar, pontos de apoio e chamada do Ligue 100. |
+
+| 3. Mapa de Pontos de Apoio | 4. Rede de Apoio e ONGs |
+| :---: | :---: |
+| <img src="assets/images/readme_images/03_tela_mapa.png" width="280" alt="Mapa de Locais Seguros" /> | <img src="assets/images/readme_images/04_tela_ajuda_ongs.png" width="280" alt="Lista de ONGs e Ajuda" /> |
+| **Geolocalização**: Mapeamento interativo de delegacias, hospitais, postos de saúde e pontos de refúgio próximos. | **Diretório de Apoio**: Catálogo com busca de organizações com discagem de telefone direta em 1 toque e e-mail. |
+
+| 5. Assistente de Escuta (Chatbot) | 6. Menu Lateral (Navegação) |
+| :---: | :---: |
+| <img src="assets/images/readme_images/05_tela_chat.png" width="280" alt="Chatbot de Escuta" /> | <img src="assets/images/readme_images/06_menu_lateral.png" width="280" alt="Menu Lateral" /> |
+| **Escuta & Diálogo**: Chatbot seguro para acolhimento emocional, dúvidas, relatos de bullying e orientação. | **Navegação Integrada**: Menu lateral com atalhos para todas as áreas e encerramento seguro de sessão. |
+
+| 7. Central de Emergência & Alertas | 8. Sobre o Projeto |
+| :---: | :---: |
+| <img src="assets/images/readme_images/07_tela_alertas.png" width="280" alt="Central de Emergência e Alertas" /> | <img src="assets/images/readme_images/08_tela_sobre.png" width="280" alt="Sobre o Projeto" /> |
+| **Emergência Rápida**: Botões de discagem imediata para Ligue 180, Polícia (190), SAMU (192) e CVV (188). | **Missão Institucional**: Contextualização do projeto, cultura de paz e créditos pedagógicos. |
 
 ---
 

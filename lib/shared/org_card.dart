@@ -4,7 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class OrgCard extends StatefulWidget {
   final Organization ngo;
-  const OrgCard({Key? key, required this.ngo}) : super(key: key);
+  const OrgCard({super.key, required this.ngo});
 
   @override
   State<OrgCard> createState() => _OrgCardState();
@@ -21,31 +21,37 @@ class _OrgCardState extends State<OrgCard> {
         : 0;
   }
 
-  void _callPhone(String phone) async {
+  Future<void> _callPhone(String phone) async {
     final String cleanPhone = phone.replaceAll(RegExp(r'[^0-9]'), '');
     final Uri uri = Uri.parse("tel:$cleanPhone");
     try {
-      if (!await launchUrl(uri)) {
+      final launched = await launchUrl(uri);
+      if (!mounted) return;
+      if (!launched) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Não foi possível ligar para $phone")),
         );
       }
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Erro ao discar: $e")),
       );
     }
   }
 
-  void _sendEmail(String email) async {
+  Future<void> _sendEmail(String email) async {
     final Uri uri = Uri.parse("mailto:$email");
     try {
-      if (!await launchUrl(uri)) {
+      final launched = await launchUrl(uri);
+      if (!mounted) return;
+      if (!launched) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Não foi possível enviar e-mail para $email")),
         );
       }
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Erro ao abrir e-mail: $e")),
       );
@@ -70,7 +76,7 @@ class _OrgCardState extends State<OrgCard> {
           side: const BorderSide(color: Color(0xFFE2E8F0), width: 1),
         ),
         elevation: 3,
-        shadowColor: const Color(0xFF0B2545).withOpacity(0.12),
+        shadowColor: const Color(0xFF0B2545).withValues(alpha: 0.12),
         margin: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 8.0),
         child: Padding(
           padding: const EdgeInsets.all(4.0),
@@ -249,16 +255,19 @@ class _OrgCardState extends State<OrgCard> {
     );
   }
 
-  void _launchURL() async {
+  Future<void> _launchURL() async {
     final String urlStr = widget.ngo.website ?? 'https://www.gov.br/mdh/pt-br/assuntos/violencia-contra-a-mulher';
     final Uri uri = Uri.parse(urlStr);
     try {
-      if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+      if (!mounted) return;
+      if (!launched) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Não foi possível abrir: $urlStr")),
         );
       }
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Erro ao abrir link: $e")),
       );
