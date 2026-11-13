@@ -1,10 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:safeherven_app/models/app_user.dart';
 import 'package:safeherven_app/screens/chat.dart';
 import 'package:safeherven_app/screens/help.dart';
 import 'package:safeherven_app/screens/places.dart';
 import 'package:safeherven_app/screens/home.dart';
 import 'package:safeherven_app/screens/wrapper.dart';
+import 'package:safeherven_app/services/local_auth_service.dart';
 
 class MenuBottom extends StatefulWidget {
   final int currentIndex;
@@ -37,10 +38,11 @@ class _MenuBottomState extends State<MenuBottom> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => StreamBuilder<User?>(
-              stream: FirebaseAuth.instance.authStateChanges(),
+            builder: (context) => StreamBuilder<AppUser?>(
+              initialData: LocalAuthService.instance.currentUser,
+              stream: LocalAuthService.instance.authStateChanges,
               builder: (context, snapshot) {
-                if (!snapshot.hasData) {
+                if (!snapshot.hasData || snapshot.data == null) {
                   return const Wrapper();
                 }
                 return HomeScreen(user: snapshot.data!);

@@ -1,5 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:safeherven_app/models/app_user.dart';
 import 'package:safeherven_app/screens/chat.dart';
 import 'package:safeherven_app/screens/help.dart';
 import 'package:safeherven_app/screens/places.dart';
@@ -13,8 +13,8 @@ import 'package:url_launcher/url_launcher.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key, required this.user});
 
-  /// Usuário atualmente autenticado via Firebase.
-  final User user;
+  /// Usuário atualmente autenticado na sessão local.
+  final AppUser user;
 
   Future<void> _callEmergency100(BuildContext context) async {
     final Uri uri = Uri.parse("tel:100");

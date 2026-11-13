@@ -5,16 +5,32 @@
 ---
 
 ## 📌 Sumário
+- [Download do Aplicativo (APK)](#-download-do-aplicativo-apk)
 - [Visão Geral](#-visão-geral)
 - [Principais Funcionalidades](#-principais-funcionalidades)
 - [Telas e Demonstração do Aplicativo](#-telas-e-demonstração-do-aplicativo)
 - [Identidade Visual](#-identidade-visual)
 - [Como Executar o Projeto](#-como-executar-o-projeto)
   - [Pré-requisitos](#pré-requisitos)
-  - [Configuração de Chaves e APIs](#configuração-de-chaves-e-apis)
-  - [Executando a Aplicação](#executando-a-aplicação)
+  - [APIs Gratuitas e Uso Offline](#apis-gratuitas-e-uso-offline)
+  - [Executando e Gerando o APK](#executando-e-gerando-o-apk)
 - [Próximos Passos (Roadmap)](#-próximos-passos-roadmap)
 - [Créditos e Instituição](#-créditos-e-instituição)
+
+---
+
+## 📥 Download do Aplicativo (APK)
+
+Você pode baixar e instalar a versão estável (`v1.0.0`) diretamente no seu celular Android, sem precisar compilar o código nem configurar chaves de API:
+
+- 📦 **[Baixar VozesLivres-v1.0.0.apk (Android)](https://github.com/albertomateus9/VozesLivres/releases/download/v1.0.0/VozesLivres-v1.0.0.apk)**
+- 🏷️ **[Ver todas as versões em Releases](https://github.com/albertomateus9/VozesLivres/releases/latest)**
+
+### Como instalar no Android
+1. Baixe o arquivo `VozesLivres-v1.0.0.apk` pelo link acima.
+2. Abra o arquivo baixado no aparelho.
+3. Se o Android solicitar, habilite **"Permitir desta fonte"** / **"Fontes desconhecidas"** para concluir a instalação.
+4. Pronto! Abra o app **Vozes Livres** e utilize em modo anônimo, convidado ou acesso local.
 
 ---
 
@@ -26,11 +42,11 @@ Nossa motivação é disponibilizar uma ferramenta acessível, confidencial e se
 
 ## 🚀 Principais Funcionalidades
 
-- 💬 **Assistente Virtual de Apoio (Angel)**: Chatbot interativo para escuta atenta, desabafo sigiloso e suporte inicial.
-- 🗺️ **Mapa de Locais Seguros**: Mapeamento com geolocalização dos pontos de apoio mais próximos (Hospitais, Delegacias, Farmácias, Abrigos e Postos de Saúde) com navegação rápida.
-- 🏥 **Rede de Apoio & ONGs**: Lista curada de ONGs e serviços públicos (Ligue 180, Mapa do Acolhimento, Instituto Maria da Penha, CVV) com contatos, e-mails, endereços e links úteis.
-- 🚨 **Canais de Emergência Direta**: Acesso rápido com um toque aos números de socorro imediato (**180** - Mulher, **190** - Polícia Militar, **192** - SAMU, **188** - CVV, **100** - Direitos Humanos).
-- 🔒 **Modo Anônimo e Convidado**: Navegação e login simplificado sem necessidade de exposição de dados pessoais.
+- 💬 **Assistente Virtual de Apoio (Angel)**: Chatbot local 100% gratuito, anônimo e offline com atalhos rápidos para acolhimento, prevenção ao bullying, cyberbullying e orientação escolar.
+- 🗺️ **Mapa de Locais Seguros (OpenStreetMap)**: Mapeamento aberto e gratuito com geolocalização dos pontos de apoio mais próximos (Hospitais, Delegacias, Farmácias, Postos de Saúde e Universidades), com fallback offline.
+- 🏥 **Rede de Apoio & ONGs**: Lista curada disponível mesmo sem internet (Ligue 100, Conselho Tutelar, SaferNet Brasil, CVV, Ligue 180 e Mapa do Acolhimento) com discagem direta em 1 toque, e-mail e site oficial.
+- 🚨 **Canais de Emergência Direta**: Acesso rápido com um toque aos números de socorro imediato (**100** - Direitos Humanos, **180** - Mulher, **190** - Polícia Militar, **192** - SAMU, **188** - CVV) e cópia rápida de coordenadas via OpenStreetMap.
+- 🔒 **Modo Anônimo e Convidado**: Sessão local simplificada sem exposição de dados pessoais nem dependência de servidores pagos.
 
 ---
 
@@ -73,9 +89,9 @@ O visual do aplicativo é baseado em elementos de tecnologia e cultura de paz:
 ## 🛠️ Como Executar o Projeto
 
 ### Pré-requisitos
-- [Flutter SDK](https://docs.flutter.dev/get-started/install) (versão `>=2.17.0`)
-- [Android Studio](https://developer.android.com/studio) ou VS Code com extensão do Flutter/Dart
-- Emulador Android/iOS ou dispositivo físico com modo de depuração USB ativo
+- [Flutter SDK](https://docs.flutter.dev/get-started/install) (`channel stable`, Dart `>=3.0.0`)
+- [Android Studio](https://developer.android.com/studio) ou VS Code com extensão Flutter/Dart
+- Emulador Android ou dispositivo físico com depuração USB (opcional para rodar localmente)
 
 ### Clonando o Repositório
 ```bash
@@ -90,40 +106,29 @@ flutter pub get
 
 ---
 
-### Configuração de Chaves e APIs
+### APIs Gratuitas e Uso Offline
 
-#### 1. Google Maps API Key
-- Obtenha uma chave no [Google Cloud Console](https://console.cloud.google.com/).
-- Adicione a chave no arquivo `android/app/src/main/AndroidManifest.xml`:
-  ```xml
-  <meta-data
-      android:name="com.google.android.geo.API_KEY"
-      android:value="SUA_CHAVE_GOOGLE_MAPS_AQUI"/>
-  ```
-- Insira também a chave no serviço de locais em `lib/services/places_service.dart`.
-
-#### 2. Firebase
-- Crie um projeto no [Console do Firebase](https://console.firebase.google.com/).
-- Baixe o arquivo `google-services.json` e adicione no diretório `android/app/`.
-- Caso utilize a CLI do FlutterFire:
-  ```bash
-  dart pub global activate flutterfire_cli
-  flutterfire configure
-  ```
-
-#### 3. Dialogflow (Chatbot)
-- Configure o agente no [Console do Dialogflow](https://dialogflow.cloud.google.com/).
-- Gere a chave de conta de serviço no Google Cloud em formato JSON.
-- Adicione o arquivo de credenciais como `assets/credentials.json`.
+O projeto **não utiliza nenhuma API com chave paga**:
+- **Mapas e Geolocalização**: Utiliza **OpenStreetMap** (`flutter_map` + `latlong2`), busca de endereços e pontos próximos via **Nominatim / Overpass API** (serviços abertos e sem chave) e fallback local caso esteja offline.
+- **Assistente Angel**: Roda localmente no dispositivo em português, com total privacidade e sem cobrança por tokens ou nuvem.
+- **Autenticação e Rede de Apoio**: Gerenciadas localmente no aplicativo para funcionamento imediato e proteção dos dados do estudante.
 
 ---
 
-### Executando a Aplicação
+### Executando e Gerando o APK
 
-Para iniciar o aplicativo no emulador ou dispositivo conectado, execute:
+Para iniciar o aplicativo no emulador ou dispositivo conectado:
 
 ```bash
 flutter run
+```
+
+Para executar testes e gerar um novo APK de release:
+
+```bash
+flutter analyze
+flutter test
+flutter build apk --release
 ```
 
 ---

@@ -1,10 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:rxdart/rxdart.dart';
-import 'package:sound_stream/sound_stream.dart';
-import 'package:dialogflow_grpc/dialogflow_grpc.dart';
-import 'package:dialogflow_grpc/generated/google/cloud/dialogflow/v2beta1/session.pb.dart';
 
 class Chat extends StatefulWidget {
   const Chat({super.key});
@@ -18,23 +13,22 @@ class _ChatState extends State<Chat> {
   final TextEditingController _textController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
-  bool _isRecording = false;
-
-  final RecorderStream _recorder = RecorderStream();
-  StreamSubscription? _recorderStatus;
-  StreamSubscription<List<int>>? _audioStreamSubscription;
-  BehaviorSubject<List<int>>? _audioStream;
-  DialogflowGrpcV2Beta1? dialogflow;
+  static const List<String> _quickTopics = [
+    "Sofrendo bullying",
+    "Cyberbullying",
+    "Ansiedade / Medo",
+    "Preciso de ajuda",
+    "Direitos do Estudante",
+  ];
 
   @override
   void initState() {
     super.initState();
-    initPlugin();
-    // Mensagem inicial acolhedora da assistente Angel para estudantes
     _messages.add(
       const ChatMessage(
         key: Key("welcome"),
-        text: "Olá! Sou a Angel, sua assistente no Vozes Livres. Este é um espaço 100% seguro, anônimo e confidencial para estudantes conversarem sobre a escola, bullying, amizades, ansiedade ou pedirem ajuda. Como posso te apoiar hoje?",
+        text:
+            "Olá! Sou a Angel, sua assistente local no Vozes Livres. Este é um espaço 100% seguro, anônimo e offline para estudantes conversarem sobre a escola, bullying, amizades, ansiedade ou pedirem ajuda. Como posso te apoiar hoje?",
         name: "Angel (Assistente)",
         type: false,
       ),
@@ -43,36 +37,9 @@ class _ChatState extends State<Chat> {
 
   @override
   void dispose() {
-    _recorderStatus?.cancel();
-    _audioStreamSubscription?.cancel();
     _textController.dispose();
     _scrollController.dispose();
     super.dispose();
-  }
-
-  Future<void> initPlugin() async {
-    _recorderStatus = _recorder.status.listen((status) {
-      if (mounted) {
-        setState(() {
-          _isRecording = status == SoundStreamStatus.Playing;
-        });
-      }
-    });
-
-    try {
-      await _recorder.initialize();
-      final String credStr = await rootBundle.loadString('assets/credentials.json');
-      final serviceAccount = ServiceAccount.fromString(credStr);
-      dialogflow = DialogflowGrpcV2Beta1.viaServiceAccount(serviceAccount);
-    } catch (e) {
-      // Fallback gracioso se as credenciais do Dialogflow não estiverem presentes
-    }
-  }
-
-  void stopStream() async {
-    await _recorder.stop();
-    await _audioStreamSubscription?.cancel();
-    await _audioStream?.close();
   }
 
   void _scrollToBottom() {
@@ -85,12 +52,13 @@ class _ChatState extends State<Chat> {
     }
   }
 
-  void handleSubmitted(String text) async {
-    if (text.trim().isEmpty) return;
+  Future<void> handleSubmitted(String text) async {
+    final trimmed = text.trim();
+    if (trimmed.isEmpty) return;
     _textController.clear();
 
-    ChatMessage message = ChatMessage(
-      text: text,
+    final message = ChatMessage(
+      text: trimmed,
       name: "Você",
       type: true,
       key: UniqueKey(),
@@ -101,34 +69,9 @@ class _ChatState extends State<Chat> {
     });
     _scrollToBottom();
 
-    if (dialogflow != null) {
-      try {
-        DetectIntentResponse data = await dialogflow!.detectIntent(text, 'pt-BR');
-        String fulfillmentText = data.queryResult.fulfillmentText;
-        if (fulfillmentText.isNotEmpty) {
-          ChatMessage botMessage = ChatMessage(
-            text: fulfillmentText,
-            name: "Angel (Assistente)",
-            type: false,
-            key: UniqueKey(),
-          );
-
-          if (mounted) {
-            setState(() {
-              _messages.insert(0, botMessage);
-            });
-            _scrollToBottom();
-          }
-          return;
-        }
-      } catch (e) {
-        // Fallback de conversa inteligente em português
-      }
-    }
-
-    await Future.delayed(const Duration(milliseconds: 500));
-    String autoReply = _getAutoReply(text);
-    ChatMessage botMessage = ChatMessage(
+    await Future.delayed(const Duration(milliseconds: 350));
+    final autoReply = _getAutoReply(trimmed);
+    final botMessage = ChatMessage(
       text: autoReply,
       name: "Angel (Assistente)",
       type: false,
@@ -145,154 +88,131 @@ class _ChatState extends State<Chat> {
 
   String _getAutoReply(String input) {
     final lower = input.toLowerCase();
-    if (lower.contains("bullying") || lower.contains("zoando") || lower.contains("xingando") || lower.contains("apelido")) {
-      return "O bullying machuca de verdade e você não precisa passar por isso sozinho(a). Nenhum colega tem o direito de te humilhar ou te ameaçar. Você gostaria de orientações sobre como buscar ajuda na orientação educacional ou com o Conselho Tutelar?";
-    } else if (lower.contains("cyberbullying") || lower.contains("foto") || lower.contains("internet") || lower.contains("grupo")) {
-      return "Sinto muito por isso. Vazamento de fotos ou ofensas em redes sociais são graves. Lembre-se de guardar print das mensagens como prova. Temos informações da SaferNet no app para te ajudar a proteger sua intimidade.";
-    } else if (lower.contains("ansiedade") || lower.contains("medo") || lower.contains("prova") || lower.contains("triste")) {
-      return "É normal se sentir sobrecarregado(a) às vezes com a escola ou problemas pessoais. Sua saúde mental importa muito! Se quiser desabafar, estou aqui. Também temos o CVV (Ligue 188) para conversa gratuita e sigilosa 24h.";
-    } else if (lower.contains("ajuda") || lower.contains("socorro") || lower.contains("emergencia") || lower.contains("perigo")) {
-      return "Estou aqui por você! Se estiver em perigo imediato, você pode acionar o Ligue 100 (Proteção a Crianças e Adolescentes) ou 180 na aba de Emergência. Fale comigo: o que está acontecendo?";
-    } else if (lower.contains("oi") || lower.contains("olá") || lower.contains("bom dia") || lower.contains("boa tarde")) {
-      return "Olá! Seja muito bem-vindo(a). Como estão as coisas na escola hoje?";
+    if (lower.contains("cyberbullying") ||
+        lower.contains("foto") ||
+        lower.contains("internet") ||
+        lower.contains("grupo") ||
+        lower.contains("rede")) {
+      return "Sinto muito por isso. Vazamento de fotos, montagens ou ofensas em grupos e redes sociais são graves e configuram crime. Guarde prints das mensagens e links como prova e acesse a SaferNet Brasil ou o Ligue 100 na aba 'Ajuda'.";
+    } else if (lower.contains("bullying") ||
+        lower.contains("zoando") ||
+        lower.contains("xingando") ||
+        lower.contains("apelido") ||
+        lower.contains("agress")) {
+      return "O bullying machuca de verdade e você não precisa passar por isso sozinho(a). Nenhum colega tem o direito de te humilhar ou ameaçar. Converse com um adulto de confiança, a coordenação escolar ou acione o Conselho Tutelar pelo Ligue 100.";
+    } else if (lower.contains("ansiedade") ||
+        lower.contains("medo") ||
+        lower.contains("prova") ||
+        lower.contains("triste") ||
+        lower.contains("chorando") ||
+        lower.contains("sozinho")) {
+      return "É compreensível se sentir sobrecarregado(a) às vezes. Respire fundo e lembre que você não está só. Se quiser conversar gratuitamente e em sigilo 24h com um voluntário, ligue 188 (CVV) na aba 'Ajuda'.";
+    } else if (lower.contains("ajuda") ||
+        lower.contains("socorro") ||
+        lower.contains("emergencia") ||
+        lower.contains("emergência") ||
+        lower.contains("perigo") ||
+        lower.contains("assédio") ||
+        lower.contains("violência")) {
+      return "Estou aqui por você! Se estiver em perigo imediato, use o botão vermelho na aba 'Alertas & Emergência' para acionar o Ligue 100 (Direitos Humanos / Infância), o Ligue 180 ou a Polícia Militar (190).";
+    } else if (lower.contains("direito") ||
+        lower.contains("eca") ||
+        lower.contains("lei") ||
+        lower.contains("conselho")) {
+      return "Pelo Estatuto da Criança e do Adolescente (ECA) e pela Lei 13.185/2015, todas as escolas devem garantir um ambiente seguro e combater o bullying. Você tem direito a acolhimento, sigilo e proteção imediata do Conselho Tutelar.";
+    } else if (lower.contains("obrigad")) {
+      return "Sempre que precisar, estarei por aqui. Você merece respeito, segurança e paz na escola!";
+    } else if (lower.contains("oi") ||
+        lower.contains("olá") ||
+        lower.contains("ola") ||
+        lower.contains("bom dia") ||
+        lower.contains("boa tarde") ||
+        lower.contains("boa noite")) {
+      return "Olá! Seja muito bem-vindo(a). Como você está se sentindo hoje? Pode digitar livremente ou tocar em um dos temas sugeridos abaixo.";
     } else {
-      return "Estou te ouvindo com atenção. Este é um espaço seguro e anônimo para estudantes. Se precisar de apoio em relação à escola, amizades, saúde mental ou contatos do Conselho Tutelar, é só me contar!";
-    }
-  }
-
-  void handleStream() async {
-    try {
-      _recorder.start();
-
-      _audioStream = BehaviorSubject<List<int>>();
-      _audioStreamSubscription = _recorder.audioStream.listen((data) {
-        _audioStream?.add(data);
-      });
-
-      var biasList = SpeechContextV2Beta1(
-          phrases: ['Vozes Livres', 'Ajuda', 'Segurança', 'Apoio'],
-          boost: 20.0);
-
-      var config = InputConfigV2beta1(
-          encoding: 'AUDIO_ENCODING_LINEAR_16',
-          languageCode: 'pt-BR',
-          sampleRateHertz: 16000,
-          singleUtterance: false,
-          speechContexts: [biasList]);
-
-      if (dialogflow != null && _audioStream != null) {
-        final responseStream = dialogflow!.streamingDetectIntent(config, _audioStream!);
-
-        responseStream.listen((data) {
-          if (mounted) {
-            setState(() {
-              String transcript = data.recognitionResult.transcript;
-              String queryText = data.queryResult.queryText;
-              String fulfillmentText = data.queryResult.fulfillmentText;
-
-              if (fulfillmentText.isNotEmpty) {
-                ChatMessage message = ChatMessage(
-                  text: queryText,
-                  name: "Você",
-                  type: true,
-                  key: UniqueKey(),
-                );
-
-                ChatMessage botMessage = ChatMessage(
-                  text: fulfillmentText,
-                  name: "Angel (Assistente)",
-                  type: false,
-                  key: UniqueKey(),
-                );
-
-                _messages.insert(0, message);
-                _textController.clear();
-                _messages.insert(0, botMessage);
-                _scrollToBottom();
-              }
-              if (transcript.isNotEmpty) {
-                _textController.text = transcript;
-              }
-            });
-          }
-        });
-      }
-    } catch (e) {
-      // Gravação de áudio
+      return "Estou te ouvindo com atenção. Todas as conversas ficam apenas no seu dispositivo. Se quiser orientações sobre bullying, segurança digital, ansiedade ou canais gratuitos como Ligue 100 e CVV 188, me conte mais ou escolha uma opção abaixo.";
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: <Widget>[
-      if (_isRecording)
-        Container(
-          width: double.infinity,
-          color: const Color(0xFFD32F2F),
-          padding: const EdgeInsets.symmetric(vertical: 6),
-          child: const Text(
-            "🔴 Gravando áudio... Fale com clareza",
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+    return Column(
+      children: <Widget>[
+        Flexible(
+          child: ListView.builder(
+            controller: _scrollController,
+            padding: const EdgeInsets.all(12.0),
+            reverse: true,
+            itemBuilder: (_, int index) => _messages[index],
+            itemCount: _messages.length,
           ),
         ),
-      Flexible(
-        child: ListView.builder(
-          controller: _scrollController,
-          padding: const EdgeInsets.all(12.0),
-          reverse: true,
-          itemBuilder: (_, int index) => _messages[index],
-          itemCount: _messages.length,
+        SizedBox(
+          height: 44,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+            itemCount: _quickTopics.length,
+            separatorBuilder: (_, __) => const SizedBox(width: 8),
+            itemBuilder: (context, index) {
+              final topic = _quickTopics[index];
+              return ActionChip(
+                label: Text(
+                  topic,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Color(0xFF0B2545),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                backgroundColor: const Color(0xFFEEF6FF),
+                side: const BorderSide(color: Color(0xFFCBD5E1)),
+                onPressed: () => handleSubmitted(topic),
+              );
+            },
+          ),
         ),
-      ),
-      const Divider(height: 1.0),
-      Container(
-        decoration: const BoxDecoration(color: Colors.white),
-        child: IconTheme(
-          data: const IconThemeData(color: Color(0xFF0B2545)),
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
-            child: Row(
-              children: <Widget>[
-                Flexible(
-                  child: TextField(
-                    controller: _textController,
-                    onSubmitted: handleSubmitted,
-                    decoration: InputDecoration(
-                      hintText: "Digite sua mensagem...",
-                      hintStyle: const TextStyle(color: Colors.black38, fontSize: 14),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24),
-                        borderSide: BorderSide.none,
+        const Divider(height: 1.0),
+        Container(
+          decoration: const BoxDecoration(color: Colors.white),
+          child: IconTheme(
+            data: const IconThemeData(color: Color(0xFF0B2545)),
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+              child: Row(
+                children: <Widget>[
+                  Flexible(
+                    child: TextField(
+                      controller: _textController,
+                      onSubmitted: handleSubmitted,
+                      decoration: InputDecoration(
+                        hintText: "Digite sua mensagem...",
+                        hintStyle: const TextStyle(color: Colors.black38, fontSize: 14),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(24),
+                          borderSide: BorderSide.none,
+                        ),
+                        filled: true,
+                        fillColor: const Color(0xFFF4F7FA),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                       ),
-                      filled: true,
-                      fillColor: const Color(0xFFF4F7FA),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                     ),
                   ),
-                ),
-                const SizedBox(width: 4),
-                CircleAvatar(
-                  backgroundColor: const Color(0xFF0B2545),
-                  child: IconButton(
-                    icon: const Icon(Icons.send, color: Colors.white, size: 20),
-                    onPressed: () => handleSubmitted(_textController.text),
+                  const SizedBox(width: 6),
+                  CircleAvatar(
+                    backgroundColor: const Color(0xFF0B2545),
+                    child: IconButton(
+                      icon: const Icon(Icons.send, color: Colors.white, size: 20),
+                      onPressed: () => handleSubmitted(_textController.text),
+                    ),
                   ),
-                ),
-                IconButton(
-                  iconSize: 26.0,
-                  icon: Icon(
-                    _isRecording ? Icons.stop_circle : Icons.mic,
-                    color: _isRecording ? const Color(0xFFD32F2F) : const Color(0xFF0066CC),
-                  ),
-                  onPressed: _isRecording ? stopStream : handleStream,
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 }
 
@@ -324,7 +244,11 @@ class ChatMessage extends StatelessWidget {
           children: <Widget>[
             Text(
               name,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF0B2545)),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 13,
+                color: Color(0xFF0B2545),
+              ),
             ),
             Container(
               margin: const EdgeInsets.only(top: 4.0),
@@ -364,7 +288,11 @@ class ChatMessage extends StatelessWidget {
           children: <Widget>[
             Text(
               name,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF0066CC)),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 13,
+                color: Color(0xFF0066CC),
+              ),
             ),
             Container(
               margin: const EdgeInsets.only(top: 4.0),
@@ -414,5 +342,3 @@ class ChatMessage extends StatelessWidget {
     );
   }
 }
-
-

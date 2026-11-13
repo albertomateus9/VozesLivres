@@ -1,6 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:safeherven_app/screens/settings/settings.dart';
+import 'package:safeherven_app/services/local_auth_service.dart';
 
 class SafeHervenAppBar extends StatelessWidget implements PreferredSizeWidget {
 
@@ -105,9 +105,9 @@ class SafeHervenAppBar extends StatelessWidget implements PreferredSizeWidget {
         );
         break;
       case 1:
-        await FirebaseAuth.instance.signOut();
+        await LocalAuthService.instance.signOut();
         if (context.mounted) {
-          Navigator.of(context).popUntil((route) => route.isFirst);
+          Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
         }
         break;
     }

@@ -32,7 +32,7 @@ class AlertScreen extends StatelessWidget {
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
     final pos = applicationBloc.currentLocation;
     final String coordsStr = pos != null
-        ? "Minhas coordenadas atuais: https://maps.google.com/?q=${pos.latitude},${pos.longitude}"
+        ? "Minhas coordenadas atuais: https://www.openstreetmap.org/?mlat=${pos.latitude}&mlon=${pos.longitude}#map=17/${pos.latitude}/${pos.longitude}"
         : "Localização atual indisponível no momento.";
 
     final String alertMsg =

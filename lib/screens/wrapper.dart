@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:safeherven_app/models/app_user.dart';
 import 'package:safeherven_app/screens/home.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:safeherven_app/services/local_auth_service.dart';
 
 class Wrapper extends StatefulWidget {
   const Wrapper({super.key});
@@ -10,7 +11,6 @@ class Wrapper extends StatefulWidget {
 }
 
 class _WrapperState extends State<Wrapper> {
-  bool _isGuestMode = false;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
@@ -29,11 +29,23 @@ class _WrapperState extends State<Wrapper> {
       _errorMessage = null;
     });
     try {
-      await FirebaseAuth.instance.signInAnonymously();
-    } catch (e) {
-      setState(() {
-        _isGuestMode = true;
-      });
+      await LocalAuthService.instance.signInAnonymously();
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _signInAsGuest() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+    try {
+      await LocalAuthService.instance.signInAsGuest();
     } finally {
       if (mounted) {
         setState(() {
@@ -52,6 +64,12 @@ class _WrapperState extends State<Wrapper> {
       });
       return;
     }
+    if (!email.contains('@')) {
+      setState(() {
+        _errorMessage = "Por favor, informe um e-mail válido.";
+      });
+      return;
+    }
 
     setState(() {
       _isLoading = true;
@@ -59,18 +77,7 @@ class _WrapperState extends State<Wrapper> {
     });
 
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        _errorMessage = e.message ?? "Erro ao realizar login.";
-      });
-    } catch (e) {
-      setState(() {
-        _errorMessage = "Erro inesperado ao conectar.";
-      });
+      await LocalAuthService.instance.signInWithEmail(email: email);
     } finally {
       if (mounted) {
         setState(() {
@@ -82,12 +89,9 @@ class _WrapperState extends State<Wrapper> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isGuestMode) {
-      return HomeScreen(user: _MockUser());
-    }
-
-    return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
+    return StreamBuilder<AppUser?>(
+      initialData: LocalAuthService.instance.currentUser,
+      stream: LocalAuthService.instance.authStateChanges,
       builder: (context, snapshot) {
         if (snapshot.hasData && snapshot.data != null) {
           return HomeScreen(user: snapshot.data!);
@@ -218,11 +222,7 @@ class _WrapperState extends State<Wrapper> {
                     const SizedBox(height: 8),
 
                     TextButton.icon(
-                      onPressed: () {
-                        setState(() {
-                          _isGuestMode = true;
-                        });
-                      },
+                      onPressed: _isLoading ? null : _signInAsGuest,
                       icon: const Icon(Icons.arrow_forward, color: Color(0xFF0066CC)),
                       label: const Text(
                         "Continuar como Convidado",
@@ -245,21 +245,4 @@ class _WrapperState extends State<Wrapper> {
       },
     );
   }
-}
-
-class _MockUser implements User {
-  @override
-  String? get displayName => "Convidado";
-
-  @override
-  String? get email => "convidado@vozeslivres.org";
-
-  @override
-  bool get isAnonymous => true;
-
-  @override
-  String get uid => "guest_anon_123";
-
-  @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

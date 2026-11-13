@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:safeherven_app/models/organization.dart';
 import 'package:safeherven_app/shared/org_card.dart';
@@ -219,30 +218,12 @@ class _HelpScreenState extends State<HelpScreen> {
   }
 
   Future<void> getOrgList() async {
-    try {
-      var data = await FirebaseFirestore.instance.collection('ngos').get();
-      if (data.docs.isNotEmpty) {
-        setState(() {
-          _allOrganizations = List.from(
-            data.docs.map((doc) => Organization.fromSnapshot(doc)),
-          );
-          _filteredOrganizations = _allOrganizations;
-          _isLoading = false;
-        });
-      } else {
-        setState(() {
-          _allOrganizations = _defaultOrganizations;
-          _filteredOrganizations = _defaultOrganizations;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _allOrganizations = _defaultOrganizations;
-        _filteredOrganizations = _defaultOrganizations;
-        _isLoading = false;
-      });
-    }
+    if (!mounted) return;
+    setState(() {
+      _allOrganizations = _defaultOrganizations;
+      _filteredOrganizations = _defaultOrganizations;
+      _isLoading = false;
+    });
   }
 }
 

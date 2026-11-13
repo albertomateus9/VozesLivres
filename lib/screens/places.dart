@@ -1,14 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:safeherven_app/blocs/application_bloc.dart';
-import 'package:safeherven_app/shared/bottom.dart';
+import 'package:safeherven_app/models/place.dart';
 import 'package:safeherven_app/shared/appbar.dart';
-import 'package:permission_handler/permission_handler.dart';
-
-import '../models/place.dart';
+import 'package:safeherven_app/shared/bottom.dart';
 
 class PlacesScreen extends StatefulWidget {
   const PlacesScreen({super.key});
@@ -18,9 +18,9 @@ class PlacesScreen extends StatefulWidget {
 }
 
 class _PlacesScreenState extends State<PlacesScreen> {
-  final Completer<GoogleMapController> _mapController = Completer();
-  late StreamSubscription locationSubscription;
-  late StreamSubscription boundsSubscription;
+  final MapController _mapController = MapController();
+  late StreamSubscription<Place?> locationSubscription;
+  late StreamSubscription<LatLngBounds> boundsSubscription;
   final _locationController = TextEditingController();
 
   Future<void> _checkStatus() async {
@@ -47,9 +47,15 @@ class _PlacesScreenState extends State<PlacesScreen> {
       }
     });
 
-    boundsSubscription = applicationBloc.bounds.stream.listen((bounds) async {
-      final GoogleMapController controller = await _mapController.future;
-      controller.animateCamera(CameraUpdate.newLatLngBounds(bounds, 50.0));
+    boundsSubscription = applicationBloc.bounds.stream.listen((bounds) {
+      if (!mounted) return;
+      _mapController.fitCamera(
+        CameraFit.bounds(
+          bounds: bounds,
+          padding: const EdgeInsets.all(42.0),
+          maxZoom: 15.5,
+        ),
+      );
     });
 
     super.initState();
@@ -60,12 +66,15 @@ class _PlacesScreenState extends State<PlacesScreen> {
     boundsSubscription.cancel();
     locationSubscription.cancel();
     _locationController.dispose();
+    _mapController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
+    final tappedPlace = applicationBloc.tappedMarkerPlace;
+
     return Scaffold(
       appBar: const SafeHervenAppBar("Locais Seguros", isHome: false),
       bottomNavigationBar: const MenuBottom(currentIndex: 1),
@@ -115,30 +124,57 @@ class _PlacesScreenState extends State<PlacesScreen> {
                   children: [
                     SizedBox(
                       height: 320,
-                      child: GoogleMap(
-                        markers: Set<Marker>.of(applicationBloc.markers),
-                        onMapCreated: (GoogleMapController controller) {
-                          if (!_mapController.isCompleted) {
-                            _mapController.complete(controller);
-                          }
-                        },
-                        myLocationEnabled: true,
-                        initialCameraPosition: CameraPosition(
-                          target: LatLng(
+                      child: FlutterMap(
+                        mapController: _mapController,
+                        options: MapOptions(
+                          initialCenter: LatLng(
                             applicationBloc.currentLocation!.latitude,
                             applicationBloc.currentLocation!.longitude,
                           ),
-                          zoom: 12.0,
+                          initialZoom: 13.5,
                         ),
+                        children: [
+                          TileLayer(
+                            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            userAgentPackageName: 'org.safeherven.app',
+                          ),
+                          MarkerLayer(
+                            markers: applicationBloc.markers,
+                          ),
+                          const RichAttributionWidget(
+                            attributions: [
+                              TextSourceAttribution(
+                                'OpenStreetMap contributors',
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
+                    if (applicationBloc.isSearchingPlaces)
+                      const Positioned(
+                        top: 12,
+                        right: 12,
+                        child: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          radius: 18,
+                          child: SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Color(0xFF0B2545),
+                            ),
+                          ),
+                        ),
+                      ),
                     if (applicationBloc.searchResults != null &&
                         applicationBloc.searchResults!.isNotEmpty)
                       Container(
                         height: 320,
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF0B2545).withValues(alpha: .85),
+                          color: const Color(0xFF0B2545).withValues(alpha: .90),
                         ),
                       ),
                     if (applicationBloc.searchResults != null &&
@@ -149,22 +185,55 @@ class _PlacesScreenState extends State<PlacesScreen> {
                           itemCount: applicationBloc.searchResults?.length ?? 0,
                           itemBuilder: (context, index) {
                             return ListTile(
-                              leading: const Icon(Icons.location_on, color: Color(0xFF0066CC)),
+                              leading: const Icon(Icons.location_on, color: Colors.white),
                               title: Text(
-                                applicationBloc.searchResults![index].description,
+                                applicationBloc.searchResults![index].description.toString(),
                                 style: const TextStyle(color: Colors.white, fontSize: 14),
                               ),
                               onTap: () {
                                 applicationBloc.setSelectedLocation(
-                                  applicationBloc.searchResults![index].placeId,
+                                  applicationBloc.searchResults![index].placeId?.toString(),
                                 );
                               },
                             );
                           },
                         ),
-                      )
+                      ),
                   ],
                 ),
+                if (tappedPlace != null)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                    child: Card(
+                      color: const Color(0xFFEEF6FF),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        side: const BorderSide(color: Color(0xFF0066CC), width: 1),
+                      ),
+                      child: ListTile(
+                        leading: const CircleAvatar(
+                          backgroundColor: Color(0xFF0B2545),
+                          child: Icon(Icons.shield_rounded, color: Colors.white, size: 20),
+                        ),
+                        title: Text(
+                          tappedPlace.name ?? 'Local Seguro',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF0B2545),
+                            fontSize: 14,
+                          ),
+                        ),
+                        subtitle: Text(
+                          tappedPlace.vicinity ?? 'OpenStreetMap',
+                          style: const TextStyle(fontSize: 12, color: Colors.black87),
+                        ),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.close, size: 18),
+                          onPressed: () => applicationBloc.selectMarkerPlace(null),
+                        ),
+                      ),
+                    ),
+                  ),
                 const Padding(
                   padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
                   child: Text(
@@ -226,16 +295,10 @@ class _PlacesScreenState extends State<PlacesScreen> {
     );
   }
 
-  Future<void> _goToPlace(Place place) async {
-    final GoogleMapController controller = await _mapController.future;
-    controller.animateCamera(
-      CameraUpdate.newCameraPosition(
-        CameraPosition(
-          target: LatLng(place.geometry.location.lat, place.geometry.location.lng),
-          zoom: 14,
-        ),
-      ),
+  void _goToPlace(Place place) {
+    _mapController.move(
+      LatLng(place.geometry.location.lat, place.geometry.location.lng),
+      14.5,
     );
   }
 }
-

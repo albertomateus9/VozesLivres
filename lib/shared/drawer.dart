@@ -1,5 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:safeherven_app/models/app_user.dart';
 import 'package:safeherven_app/screens/help.dart';
 import 'package:safeherven_app/screens/places.dart';
 import 'package:safeherven_app/screens/about.dart';
@@ -7,6 +7,7 @@ import 'package:safeherven_app/screens/chat.dart';
 import 'package:safeherven_app/screens/home.dart';
 import 'package:safeherven_app/screens/alert.dart';
 import 'package:safeherven_app/screens/wrapper.dart';
+import 'package:safeherven_app/services/local_auth_service.dart';
 
 class MenuDrawer extends StatelessWidget {
   const MenuDrawer({super.key});
@@ -117,10 +118,11 @@ class MenuDrawer extends StatelessWidget {
           onTap: () {
             switch (element) {
               case 'Início':
-                screen = StreamBuilder<User?>(
-                    stream: FirebaseAuth.instance.authStateChanges(),
+                screen = StreamBuilder<AppUser?>(
+                    initialData: LocalAuthService.instance.currentUser,
+                    stream: LocalAuthService.instance.authStateChanges,
                     builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
+                      if (!snapshot.hasData || snapshot.data == null) {
                         return const Wrapper();
                       }
                       return HomeScreen(user: snapshot.data!);
@@ -167,7 +169,10 @@ class MenuDrawer extends StatelessWidget {
           ),
           onPressed: () async {
             Navigator.of(context).pop();
-            await FirebaseAuth.instance.signOut();
+            await LocalAuthService.instance.signOut();
+            if (context.mounted) {
+              Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+            }
           },
           icon: const Icon(Icons.logout_rounded),
           label: const Text(

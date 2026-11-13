@@ -1,5 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:safeherven_app/services/local_auth_service.dart';
 import 'package:safeherven_app/shared/bottom.dart';
 import 'package:safeherven_app/screens/chat.dart';
 import 'package:safeherven_app/shared/appbar.dart';
@@ -16,7 +16,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
+    final user = LocalAuthService.instance.currentUser;
 
     return Scaffold(
       appBar: const SafeHervenAppBar("Configurações", isHome: false),
@@ -102,7 +102,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Seus dados são criptografados e protegidos.")),
+                      const SnackBar(content: Text("Seus dados permanecem locais no aparelho com total privacidade.")),
                     );
                   },
                 ),
@@ -118,9 +118,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
             onPressed: () async {
-              await FirebaseAuth.instance.signOut();
+              await LocalAuthService.instance.signOut();
               if (context.mounted) {
-                Navigator.of(context).popUntil((route) => route.isFirst);
+                Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
               }
             },
             icon: const Icon(Icons.logout),
