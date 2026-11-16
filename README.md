@@ -21,16 +21,16 @@
 
 ## 📥 Download do Aplicativo (APK)
 
-Você pode baixar e instalar a versão estável (`v1.0.0`) diretamente no seu celular Android, sem precisar compilar o código nem configurar chaves de API:
+Você pode baixar e instalar a versão estável mais recente (`v1.1.0`) diretamente no seu celular Android, sem precisar compilar o código nem configurar chaves de API:
 
-- 📦 **[Baixar VozesLivres-v1.0.0.apk (Android)](https://github.com/albertomateus9/VozesLivres/releases/download/v1.0.0/VozesLivres-v1.0.0.apk)**
+- 📦 **[Baixar VozesLivres-v1.1.0.apk (Android)](https://github.com/albertomateus9/VozesLivres/releases/download/v1.1.0/VozesLivres-v1.1.0.apk)**
 - 🏷️ **[Ver todas as versões em Releases](https://github.com/albertomateus9/VozesLivres/releases/latest)**
 
 ### Como instalar no Android
-1. Baixe o arquivo `VozesLivres-v1.0.0.apk` pelo link acima.
+1. Baixe o arquivo `VozesLivres-v1.1.0.apk` pelo link acima.
 2. Abra o arquivo baixado no aparelho.
 3. Se o Android solicitar, habilite **"Permitir desta fonte"** / **"Fontes desconhecidas"** para concluir a instalação.
-4. Pronto! Abra o app **Vozes Livres** e utilize em modo anônimo, convidado ou acesso local.
+4. Pronto! Abra o app **Vozes Livres** e acesse diretamente — sem necessidade de login, senha ou cadastro.
 
 ---
 
@@ -46,18 +46,18 @@ Nossa motivação é disponibilizar uma ferramenta acessível, confidencial e se
 - 🗺️ **Mapa de Locais Seguros (OpenStreetMap)**: Mapeamento aberto e gratuito com geolocalização dos pontos de apoio mais próximos (Hospitais, Delegacias, Farmácias, Postos de Saúde e Universidades), com fallback offline.
 - 🏥 **Rede de Apoio & ONGs**: Lista curada disponível mesmo sem internet (Ligue 100, Conselho Tutelar, SaferNet Brasil, CVV, Ligue 180 e Mapa do Acolhimento) com discagem direta em 1 toque, e-mail e site oficial.
 - 🚨 **Canais de Emergência Direta**: Acesso rápido com um toque aos números de socorro imediato (**100** - Direitos Humanos, **180** - Mulher, **190** - Polícia Militar, **192** - SAMU, **188** - CVV) e cópia rápida de coordenadas via OpenStreetMap.
-- 🔒 **Modo Anônimo e Convidado**: Sessão local simplificada sem exposição de dados pessoais nem dependência de servidores pagos.
+- 🔒 **Entrada Direta & Privacidade Total**: Acesso imediato em um toque sem login, senha ou cadastro, com atalhos diretos para conversar com a Angel ou acionar emergência mantendo os dados apenas no dispositivo.
 
 ---
 
 ## 📱 Telas e Demonstração do Aplicativo
 
-Abaixo estão as capturas de tela reais da aplicação em execução no emulador Android, ilustrando a interface e o fluxo do usuário:
+Abaixo estão capturas de tela da aplicação em execução no emulador Android, ilustrando a interface e o fluxo do usuário:
 
-| 1. Autenticação & Modo Anônimo | 2. Início / Painel de Acolhimento |
+| 1. Entrada Direta & Acolhimento | 2. Início / Painel de Acolhimento |
 | :---: | :---: |
-| <img src="assets/images/readme_images/01_tela_login.png" width="280" alt="Tela de Autenticação e Entrada Anônima" /> | <img src="assets/images/readme_images/02_tela_home.png" width="280" alt="Tela Inicial / Home" /> |
-| **Login e Privacidade**: Opções de login tradicional, entrada anônima ou acesso como convidado sem expor identidade. | **Painel Principal**: Saudação acolhedora, cards rápidos para chatbot, conselho tutelar, pontos de apoio e chamada do Ligue 100. |
+| <img src="assets/images/readme_images/01_tela_entrada.png" width="280" alt="Tela de Entrada Direta e Acolhimento" /> | <img src="assets/images/readme_images/02_tela_home.png" width="280" alt="Tela Inicial / Home" /> |
+| **Entrada Direta sem Login**: Acesso imediato em 1 toque, 100% anônimo e offline, com atalhos diretos para o chat e canais de emergência. | **Painel Principal**: Saudação acolhedora em paleta suave, cards rápidos para chatbot, conselho tutelar, pontos de apoio e chamada do Ligue 100. |
 
 | 3. Mapa de Pontos de Apoio | 4. Rede de Apoio e ONGs |
 | :---: | :---: |
@@ -67,7 +67,7 @@ Abaixo estão as capturas de tela reais da aplicação em execução no emulador
 | 5. Assistente de Escuta (Chatbot) | 6. Menu Lateral (Navegação) |
 | :---: | :---: |
 | <img src="assets/images/readme_images/05_tela_chat.png" width="280" alt="Chatbot de Escuta" /> | <img src="assets/images/readme_images/06_menu_lateral.png" width="280" alt="Menu Lateral" /> |
-| **Escuta & Diálogo**: Chatbot seguro para acolhimento emocional, dúvidas, relatos de bullying e orientação. | **Navegação Integrada**: Menu lateral com atalhos para todas as áreas e encerramento seguro de sessão. |
+| **Escuta & Diálogo**: Chatbot seguro para acolhimento emocional, dúvidas, relatos de bullying e orientação. | **Navegação Integrada**: Menu lateral com atalhos para todas as áreas e retorno discreto à tela de entrada. |
 
 | 7. Central de Emergência & Alertas | 8. Sobre o Projeto |
 | :---: | :---: |
@@ -78,11 +78,11 @@ Abaixo estão as capturas de tela reais da aplicação em execução no emulador
 
 ## 🎨 Identidade Visual
 
-O visual do aplicativo é baseado em elementos de tecnologia e cultura de paz:
-- **Azul Marinho (`#0B2545`)**: Transmite confiança, estabilidade e proteção.
-- **Azul Tecnologia (`#0066CC`)**: Traz clareza e acessibilidade aos recursos.
-- **Vermelho Carmim (`#D32F2F`)**: Destaque tático para emergências e alertas.
-- **Branco/Cinza Claro (`#F4F7FA`)**: Proporciona legibilidade e visual limpo.
+A paleta do aplicativo foi desenhada com base em princípios psicofisiológicos e de neurociência ambiental (alta luminosidade e baixa saturação para conforto e redução de alerta visual):
+- **Rosa Antigo Suave (`#944D60` / `#7D3E4F`)**: Transmite acolhimento, segurança e proximidade sem estímulos agressivos.
+- **Malva & Taupe Neutros Suaves (`#7A5966` / `#615356`)**: Equilíbrio emocional, clareza e leitura confortável.
+- **Rosa-Carmim Contido (`#AE4E52`)**: Destaque tático para emergências e alertas sem causar pânico visual.
+- **Marfim Rosado & Névoa Rosa (`#FBF8F7` / `#F8EAEF`)**: Superfícies neutras suaves que reduzem fadiga visual e aumentam a sensação de calma.
 
 ---
 
@@ -111,7 +111,7 @@ flutter pub get
 O projeto **não utiliza nenhuma API com chave paga**:
 - **Mapas e Geolocalização**: Utiliza **OpenStreetMap** (`flutter_map` + `latlong2`), busca de endereços e pontos próximos via **Nominatim / Overpass API** (serviços abertos e sem chave) e fallback local caso esteja offline.
 - **Assistente Angel**: Roda localmente no dispositivo em português, com total privacidade e sem cobrança por tokens ou nuvem.
-- **Autenticação e Rede de Apoio**: Gerenciadas localmente no aplicativo para funcionamento imediato e proteção dos dados do estudante.
+- **Sessão Anônima e Rede de Apoio**: Gerenciadas localmente no aplicativo para funcionamento imediato e proteção dos dados do estudante.
 
 ---
 
