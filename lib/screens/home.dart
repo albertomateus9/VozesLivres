@@ -3,9 +3,10 @@ import 'package:safeherven_app/models/app_user.dart';
 import 'package:safeherven_app/screens/chat.dart';
 import 'package:safeherven_app/screens/help.dart';
 import 'package:safeherven_app/screens/places.dart';
-import 'package:safeherven_app/shared/drawer.dart';
-import 'package:safeherven_app/shared/bottom.dart';
 import 'package:safeherven_app/shared/appbar.dart';
+import 'package:safeherven_app/shared/bottom.dart';
+import 'package:safeherven_app/shared/drawer.dart';
+import 'package:safeherven_app/theme/app_colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Tela inicial da aplicação Vozes Livres Escolar.
@@ -13,416 +14,285 @@ import 'package:url_launcher/url_launcher.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key, required this.user});
 
-  /// Usuário atualmente autenticado na sessão local.
+  /// Sessão local ativa (anônima e sem cadastro).
   final AppUser user;
 
   Future<void> _callEmergency100(BuildContext context) async {
-    final Uri uri = Uri.parse("tel:100");
+    final Uri uri = Uri.parse('tel:100');
     try {
       final launched = await launchUrl(uri);
       if (!context.mounted) return;
       if (!launched) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Não foi possível realizar chamada para o Ligue 100")),
+          const SnackBar(
+            content: Text('Não foi possível realizar chamada para o Ligue 100'),
+          ),
         );
       }
     } catch (e) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Erro ao discar: $e")),
+        SnackBar(content: Text('Erro ao discar: $e')),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
-    final String displayName = (user.displayName != null && user.displayName!.isNotEmpty)
-        ? user.displayName!
-        : "estudante";
+    final String displayName =
+        (user.displayName != null && user.displayName!.isNotEmpty)
+            ? user.displayName!
+            : 'Estudante';
 
     return Scaffold(
-      appBar: const SafeHervenAppBar("Início", isHome: true),
+      appBar: const SafeHervenAppBar('Início', isHome: true),
       drawer: const MenuDrawer(),
       bottomNavigationBar: const MenuBottom(currentIndex: 0),
       body: Column(
         children: [
-          // ==========================================
-          // BANNER SUPERIOR DE BOAS-VINDAS ESCOLAR
-          // ==========================================
           Semantics(
-            label: "Saudação do aplicativo para o estudante $displayName",
+            label: 'Saudação de acolhimento para $displayName',
             child: Container(
-              height: 90,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.only(
-                  bottomRight: Radius.circular(40),
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB(0, 18, 20, 20),
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(36),
                 ),
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF0B2545), Color(0xFF134074)],
+                gradient: LinearGradient(
+                  colors: [AppColors.primarySafety, AppColors.primaryDeep],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF0B2545).withValues(alpha: 0.4),
-                    offset: const Offset(0.0, 4.0),
-                    blurRadius: 10.0,
-                  ),
-                ],
               ),
-              child: Stack(
-                children: [
-                  Positioned(
-                    top: 25,
-                    left: 0,
-                    child: Container(
-                      height: 42,
-                      padding: const EdgeInsets.only(left: 20, right: 30),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(50),
-                          bottomRight: Radius.circular(50),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 4,
-                            offset: Offset(2, 2),
-                          ),
-                        ],
-                      ),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "Olá $displayName, seja bem-vindo(a) à escola!",
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF0B2545),
-                        ),
-                      ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  constraints: const BoxConstraints(minHeight: 42),
+                  padding: const EdgeInsets.only(
+                    left: 20,
+                    right: 26,
+                    top: 10,
+                    bottom: 10,
+                  ),
+                  decoration: const BoxDecoration(
+                    color: AppColors.canvasWarm,
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(50),
+                      bottomRight: Radius.circular(50),
                     ),
                   ),
-                ],
+                  child: Text(
+                    'Olá, $displayName! Você está em um lugar seguro.',
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primarySafety,
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
-
-          SizedBox(height: height * 0.015),
-
-          // ==========================================
-          // CARD INFORMATIVO PRINCIPAL ("Vozes Livres Escolar")
-          // ==========================================
+          const SizedBox(height: 12),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Semantics(
               container: true,
-              label: "Cartão de apresentação do Vozes Livres Escolar para estudantes",
+              label: 'Cartão de apresentação do Vozes Livres Escolar para estudantes',
               child: Container(
-                height: 190,
+                constraints: const BoxConstraints(minHeight: 168),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: AppColors.surfaceElevated,
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: const Color(0xFFE2E8F0), width: 1),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF0B2545).withValues(alpha: 0.08),
-                      blurRadius: 15,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
+                  border: Border.all(color: AppColors.borderSoft),
                 ),
-                child: Row(
-                  children: [
-                    ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        bottomLeft: Radius.circular(20),
-                      ),
-                      child: Image.asset(
-                        "assets/images/home/free-woman.jpeg",
-                        width: 135,
-                        height: 190,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Row(
-                              children: const [
-                                Text(
-                                  "Vozes Livres",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xFF0B2545),
-                                  ),
-                                ),
-                                SizedBox(width: 4),
-                                Icon(Icons.school, color: Color(0xFF0066CC), size: 18),
-                              ],
-                            ),
-                            const SizedBox(height: 2),
-                            const Text(
-                              "Cultura de Paz na Escola",
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Color(0xFF0066CC),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const Divider(height: 14),
-                            const Text(
-                              "Espaço seguro, confidencial e anônimo de acolhimento para estudantes. Prevenção ao bullying, apoio emocional e proteção dos direitos dos menores.",
-                              style: TextStyle(
-                                fontSize: 11,
-                                height: 1.3,
-                                color: Colors.black87,
-                              ),
-                            ),
-                          ],
+                child: IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(19),
+                          bottomLeft: Radius.circular(19),
+                        ),
+                        child: Image.asset(
+                          'assets/images/home/free-woman.jpeg',
+                          width: 125,
+                          fit: BoxFit.cover,
                         ),
                       ),
-                    ),
-                  ],
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(14.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Row(
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      'Vozes Livres',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.primarySafety,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 6),
+                                  Icon(
+                                    Icons.school_outlined,
+                                    color: AppColors.warmthText,
+                                    size: 18,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 2),
+                              const Text(
+                                'Cultura de Paz na Escola',
+                                style: TextStyle(
+                                  fontSize: 12.5,
+                                  color: AppColors.secondaryCalm,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const Divider(height: 14),
+                              const Text(
+                                'Espaço seguro, confidencial e anônimo de acolhimento para estudantes. Prevenção ao bullying, apoio emocional e proteção de direitos.',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  height: 1.35,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-
-          const SizedBox(height: 10),
-
-          // ==========================================
-          // LISTA DE RECURSOS ESCOLARES
-          // ==========================================
+          const SizedBox(height: 12),
           Expanded(
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               children: [
-                // Card 1: Chatbot de Acolhimento Escolar
-                Semantics(
-                  button: true,
-                  label: "Abrir assistente de escuta e orientação para estudantes",
-                  hint: "Toque duas vezes para conversar de forma anônima sobre dilemas da escola",
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const ChatScreen()),
-                      );
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 10),
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF0B2545), Color(0xFF134074)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF0B2545).withValues(alpha: 0.3),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const [
-                              Text(
-                                "Escuta & Orientação (Chatbot)",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Icon(Icons.chat_bubble_outline, color: Colors.white),
-                            ],
-                          ),
-                          const SizedBox(height: 6),
-                          const Text(
-                            "Precisa conversar sobre bullying, ansiedade, dilemas escolares ou pedir conselhos? Fale com a assistente de forma totalmente sigilosa.",
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                _HomeResourceCard(
+                  semanticsLabel: 'Abrir assistente de escuta e orientação para estudantes',
+                  semanticsHint:
+                      'Toque duas vezes para conversar de forma anônima sobre dilemas da escola',
+                  title: 'Escuta & Orientação (Chatbot)',
+                  subtitle:
+                      'Precisa conversar sobre bullying, ansiedade, dilemas escolares ou pedir conselhos? Fale com a assistente de forma totalmente sigilosa.',
+                  icon: Icons.chat_bubble_outline,
+                  gradientColors: const [
+                    AppColors.primarySafety,
+                    AppColors.primaryDeep,
+                  ],
+                  subtitleColor: AppColors.onPrimaryMuted,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ChatScreen()),
+                    );
+                  },
                 ),
-
-                // Card 2: Rede de Proteção da Infância & Conselho Tutelar
-                Semantics(
-                  button: true,
-                  label: "Abrir contatos do Conselho Tutelar e redes de apoio infantil e juvenil",
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const HelpScreen()),
-                      );
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 10),
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF0066CC), Color(0xFF0B2545)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF0066CC).withValues(alpha: 0.3),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const [
-                              Text(
-                                "Proteção à Criança e Adolescente",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Icon(Icons.health_and_safety_outlined, color: Colors.white),
-                            ],
-                          ),
-                          const SizedBox(height: 6),
-                          const Text(
-                            "Acesse informações do Conselho Tutelar, Ligue 100 (Direitos Humanos), SaferNet e apoio psicológico para estudantes.",
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                _HomeResourceCard(
+                  semanticsLabel:
+                      'Abrir contatos do Conselho Tutelar e redes de apoio infantil e juvenil',
+                  title: 'Proteção à Criança e Adolescente',
+                  subtitle:
+                      'Acesse informações do Conselho Tutelar, Ligue 100 (Direitos Humanos), SaferNet e apoio psicológico para estudantes.',
+                  icon: Icons.health_and_safety_outlined,
+                  gradientColors: const [
+                    AppColors.secondaryCalm,
+                    AppColors.secondaryDeep,
+                  ],
+                  subtitleColor: AppColors.onSecondaryMuted,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const HelpScreen()),
+                    );
+                  },
                 ),
-
-                // Card 3: Locais Seguros / Mapa
-                Semantics(
-                  button: true,
-                  label: "Abrir mapa com escolas, postos de saúde e centros de apoio",
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const PlacesScreen()),
-                      );
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 10),
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF1E293B), Color(0xFF0F172A)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.2),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const [
-                              Text(
-                                "Mapa de Pontos de Apoio",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Icon(Icons.location_on_outlined, color: Colors.white),
-                            ],
-                          ),
-                          const SizedBox(height: 6),
-                          const Text(
-                            "Localize postos de saúde, escolas, centro de assistência social (CRAS) e locais seguros na sua comunidade.",
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                _HomeResourceCard(
+                  semanticsLabel:
+                      'Abrir mapa com escolas, postos de saúde e centros de apoio',
+                  title: 'Mapa de Pontos de Apoio',
+                  subtitle:
+                      'Localize postos de saúde, escolas, centro de assistência social (CRAS) e locais seguros na sua comunidade.',
+                  icon: Icons.location_on_outlined,
+                  gradientColors: const [
+                    AppColors.mapSlateTeal,
+                    AppColors.mapSlateDeep,
+                  ],
+                  subtitleColor: AppColors.onMapSlateMuted,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const PlacesScreen()),
+                    );
+                  },
                 ),
-
-                // Banner de Chamada Rápida - Ligue 100 (Proteção a Menores)
                 Semantics(
                   button: true,
-                  label: "Ligar para o Ligue 100 Disque Direitos Humanos e Proteção da Criança e Adolescente",
+                  label:
+                      'Ligar para o Ligue 100 Disque Direitos Humanos e Proteção da Criança e Adolescente',
                   child: Container(
-                    margin: const EdgeInsets.only(bottom: 12),
+                    margin: const EdgeInsets.only(bottom: 14),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFD32F2F),
+                      color: AppColors.protectiveAlert,
                       borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFFD32F2F).withValues(alpha: 0.4),
-                          blurRadius: 8,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
                     ),
                     child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                      leading: const Icon(Icons.shield_outlined, color: Colors.white, size: 28),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 6,
+                      ),
+                      leading: const Icon(
+                        Icons.shield_outlined,
+                        color: Colors.white,
+                        size: 28,
+                      ),
                       title: const Text(
-                        "Proteção Escolar - Ligue 100",
-                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                        'Proteção Escolar - Ligue 100',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                       subtitle: const Text(
-                        "Disque Direitos Humanos para crianças e adolescentes (Gratuito 24h)",
-                        style: TextStyle(color: Colors.white70, fontSize: 11),
+                        'Disque Direitos Humanos para crianças e adolescentes (Gratuito 24h)',
+                        style: TextStyle(
+                          color: AppColors.onAlertMuted,
+                          fontSize: 12,
+                        ),
                       ),
                       trailing: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
-                          foregroundColor: const Color(0xFFD32F2F),
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          foregroundColor: AppColors.protectiveAlert,
+                          minimumSize: const Size(88, 44),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
                         onPressed: () => _callEmergency100(context),
-                        child: const Text("Ligar 100", style: TextStyle(fontWeight: FontWeight.bold)),
+                        child: const Text(
+                          'Ligar 100',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
                   ),
@@ -436,6 +306,85 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
+class _HomeResourceCard extends StatelessWidget {
+  const _HomeResourceCard({
+    required this.semanticsLabel,
+    this.semanticsHint,
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.gradientColors,
+    required this.subtitleColor,
+    required this.onTap,
+  });
 
+  final String semanticsLabel;
+  final String? semanticsHint;
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final List<Color> gradientColors;
+  final Color subtitleColor;
+  final VoidCallback onTap;
 
-
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: semanticsLabel,
+      hint: semanticsHint,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: gradientColors,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(16),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          title,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Icon(icon, color: Colors.white),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      color: subtitleColor,
+                      fontSize: 12.5,
+                      height: 1.35,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

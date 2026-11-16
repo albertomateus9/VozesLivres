@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:safeherven_app/theme/app_colors.dart';
 
 class Chat extends StatefulWidget {
   const Chat({super.key});
@@ -14,11 +15,11 @@ class _ChatState extends State<Chat> {
   final ScrollController _scrollController = ScrollController();
 
   static const List<String> _quickTopics = [
-    "Sofrendo bullying",
-    "Cyberbullying",
-    "Ansiedade / Medo",
-    "Preciso de ajuda",
-    "Direitos do Estudante",
+    'Sofrendo bullying',
+    'Cyberbullying',
+    'Ansiedade / Medo',
+    'Preciso de ajuda',
+    'Direitos do Estudante',
   ];
 
   @override
@@ -26,10 +27,10 @@ class _ChatState extends State<Chat> {
     super.initState();
     _messages.add(
       const ChatMessage(
-        key: Key("welcome"),
+        key: Key('welcome'),
         text:
-            "Olá! Sou a Angel, sua assistente local no Vozes Livres. Este é um espaço 100% seguro, anônimo e offline para estudantes conversarem sobre a escola, bullying, amizades, ansiedade ou pedirem ajuda. Como posso te apoiar hoje?",
-        name: "Angel (Assistente)",
+            'Olá! Sou a Angel, sua assistente local no Vozes Livres. Este é um espaço 100% seguro, anônimo e offline para estudantes conversarem sobre a escola, bullying, amizades, ansiedade ou pedirem ajuda. Como posso te apoiar hoje?',
+        name: 'Angel (Assistente)',
         type: false,
       ),
     );
@@ -59,7 +60,7 @@ class _ChatState extends State<Chat> {
 
     final message = ChatMessage(
       text: trimmed,
-      name: "Você",
+      name: 'Você',
       type: true,
       key: UniqueKey(),
     );
@@ -73,7 +74,7 @@ class _ChatState extends State<Chat> {
     final autoReply = _getAutoReply(trimmed);
     final botMessage = ChatMessage(
       text: autoReply,
-      name: "Angel (Assistente)",
+      name: 'Angel (Assistente)',
       type: false,
       key: UniqueKey(),
     );
@@ -88,49 +89,49 @@ class _ChatState extends State<Chat> {
 
   String _getAutoReply(String input) {
     final lower = input.toLowerCase();
-    if (lower.contains("cyberbullying") ||
-        lower.contains("foto") ||
-        lower.contains("internet") ||
-        lower.contains("grupo") ||
-        lower.contains("rede")) {
+    if (lower.contains('cyberbullying') ||
+        lower.contains('foto') ||
+        lower.contains('internet') ||
+        lower.contains('grupo') ||
+        lower.contains('rede')) {
       return "Sinto muito por isso. Vazamento de fotos, montagens ou ofensas em grupos e redes sociais são graves e configuram crime. Guarde prints das mensagens e links como prova e acesse a SaferNet Brasil ou o Ligue 100 na aba 'Ajuda'.";
-    } else if (lower.contains("bullying") ||
-        lower.contains("zoando") ||
-        lower.contains("xingando") ||
-        lower.contains("apelido") ||
-        lower.contains("agress")) {
-      return "O bullying machuca de verdade e você não precisa passar por isso sozinho(a). Nenhum colega tem o direito de te humilhar ou ameaçar. Converse com um adulto de confiança, a coordenação escolar ou acione o Conselho Tutelar pelo Ligue 100.";
-    } else if (lower.contains("ansiedade") ||
-        lower.contains("medo") ||
-        lower.contains("prova") ||
-        lower.contains("triste") ||
-        lower.contains("chorando") ||
-        lower.contains("sozinho")) {
+    } else if (lower.contains('bullying') ||
+        lower.contains('zoando') ||
+        lower.contains('xingando') ||
+        lower.contains('apelido') ||
+        lower.contains('agress')) {
+      return 'O bullying machuca de verdade e você não precisa passar por isso sozinho(a). Nenhum colega tem o direito de te humilhar ou ameaçar. Converse com um adulto de confiança, a coordenação escolar ou acione o Conselho Tutelar pelo Ligue 100.';
+    } else if (lower.contains('ansiedade') ||
+        lower.contains('medo') ||
+        lower.contains('prova') ||
+        lower.contains('triste') ||
+        lower.contains('chorando') ||
+        lower.contains('sozinho')) {
       return "É compreensível se sentir sobrecarregado(a) às vezes. Respire fundo e lembre que você não está só. Se quiser conversar gratuitamente e em sigilo 24h com um voluntário, ligue 188 (CVV) na aba 'Ajuda'.";
-    } else if (lower.contains("ajuda") ||
-        lower.contains("socorro") ||
-        lower.contains("emergencia") ||
-        lower.contains("emergência") ||
-        lower.contains("perigo") ||
-        lower.contains("assédio") ||
-        lower.contains("violência")) {
-      return "Estou aqui por você! Se estiver em perigo imediato, use o botão vermelho na aba 'Alertas & Emergência' para acionar o Ligue 100 (Direitos Humanos / Infância), o Ligue 180 ou a Polícia Militar (190).";
-    } else if (lower.contains("direito") ||
-        lower.contains("eca") ||
-        lower.contains("lei") ||
-        lower.contains("conselho")) {
-      return "Pelo Estatuto da Criança e do Adolescente (ECA) e pela Lei 13.185/2015, todas as escolas devem garantir um ambiente seguro e combater o bullying. Você tem direito a acolhimento, sigilo e proteção imediata do Conselho Tutelar.";
-    } else if (lower.contains("obrigad")) {
-      return "Sempre que precisar, estarei por aqui. Você merece respeito, segurança e paz na escola!";
-    } else if (lower.contains("oi") ||
-        lower.contains("olá") ||
-        lower.contains("ola") ||
-        lower.contains("bom dia") ||
-        lower.contains("boa tarde") ||
-        lower.contains("boa noite")) {
-      return "Olá! Seja muito bem-vindo(a). Como você está se sentindo hoje? Pode digitar livremente ou tocar em um dos temas sugeridos abaixo.";
+    } else if (lower.contains('ajuda') ||
+        lower.contains('socorro') ||
+        lower.contains('emergencia') ||
+        lower.contains('emergência') ||
+        lower.contains('perigo') ||
+        lower.contains('assédio') ||
+        lower.contains('violência')) {
+      return "Estou aqui por você! Se estiver em perigo imediato, use o botão na aba 'Alertas & Emergência' para acionar o Ligue 100 (Direitos Humanos / Infância), o Ligue 180 ou a Polícia Militar (190).";
+    } else if (lower.contains('direito') ||
+        lower.contains('eca') ||
+        lower.contains('lei') ||
+        lower.contains('conselho')) {
+      return 'Pelo Estatuto da Criança e do Adolescente (ECA) e pela Lei 13.185/2015, todas as escolas devem garantir um ambiente seguro e combater o bullying. Você tem direito a acolhimento, sigilo e proteção imediata do Conselho Tutelar.';
+    } else if (lower.contains('obrigad')) {
+      return 'Sempre que precisar, estarei por aqui. Você merece respeito, segurança e paz na escola!';
+    } else if (lower.contains('oi') ||
+        lower.contains('olá') ||
+        lower.contains('ola') ||
+        lower.contains('bom dia') ||
+        lower.contains('boa tarde') ||
+        lower.contains('boa noite')) {
+      return 'Olá! Seja muito bem-vindo(a). Como você está se sentindo hoje? Pode digitar livremente ou tocar em um dos temas sugeridos abaixo.';
     } else {
-      return "Estou te ouvindo com atenção. Todas as conversas ficam apenas no seu dispositivo. Se quiser orientações sobre bullying, segurança digital, ansiedade ou canais gratuitos como Ligue 100 e CVV 188, me conte mais ou escolha uma opção abaixo.";
+      return 'Estou te ouvindo com atenção. Todas as conversas ficam apenas no seu dispositivo. Se quiser orientações sobre bullying, segurança digital, ansiedade ou canais gratuitos como Ligue 100 e CVV 188, me conte mais ou escolha uma opção abaixo.';
     }
   }
 
@@ -148,7 +149,7 @@ class _ChatState extends State<Chat> {
           ),
         ),
         SizedBox(
-          height: 44,
+          height: 46,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
@@ -160,13 +161,13 @@ class _ChatState extends State<Chat> {
                 label: Text(
                   topic,
                   style: const TextStyle(
-                    fontSize: 12,
-                    color: Color(0xFF0B2545),
+                    fontSize: 12.5,
+                    color: AppColors.primarySafety,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                backgroundColor: const Color(0xFFEEF6FF),
-                side: const BorderSide(color: Color(0xFFCBD5E1)),
+                backgroundColor: AppColors.surfaceCalmTint,
+                side: const BorderSide(color: AppColors.borderCalm),
                 onPressed: () => handleSubmitted(topic),
               );
             },
@@ -174,9 +175,9 @@ class _ChatState extends State<Chat> {
         ),
         const Divider(height: 1.0),
         Container(
-          decoration: const BoxDecoration(color: Colors.white),
+          decoration: const BoxDecoration(color: AppColors.surfaceElevated),
           child: IconTheme(
-            data: const IconThemeData(color: Color(0xFF0B2545)),
+            data: const IconThemeData(color: AppColors.primarySafety),
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
               child: Row(
@@ -186,22 +187,30 @@ class _ChatState extends State<Chat> {
                       controller: _textController,
                       onSubmitted: handleSubmitted,
                       decoration: InputDecoration(
-                        hintText: "Digite sua mensagem...",
-                        hintStyle: const TextStyle(color: Colors.black38, fontSize: 14),
+                        hintText: 'Digite sua mensagem...',
+                        hintStyle: const TextStyle(
+                          color: AppColors.textMuted,
+                          fontSize: 14,
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(24),
                           borderSide: BorderSide.none,
                         ),
                         filled: true,
-                        fillColor: const Color(0xFFF4F7FA),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        fillColor: AppColors.canvasWarm,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 10,
+                        ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: 8),
                   CircleAvatar(
-                    backgroundColor: const Color(0xFF0B2545),
+                    radius: 22,
+                    backgroundColor: AppColors.primarySafety,
                     child: IconButton(
+                      tooltip: 'Enviar mensagem',
                       icon: const Icon(Icons.send, color: Colors.white, size: 20),
                       onPressed: () => handleSubmitted(_textController.text),
                     ),
@@ -233,7 +242,7 @@ class ChatMessage extends StatelessWidget {
       Container(
         margin: const EdgeInsets.only(right: 10.0),
         child: const CircleAvatar(
-          backgroundColor: Color(0xFF0066CC),
+          backgroundColor: AppColors.secondaryCalm,
           foregroundColor: Colors.white,
           child: Text('A', style: TextStyle(fontWeight: FontWeight.bold)),
         ),
@@ -247,31 +256,28 @@ class ChatMessage extends StatelessWidget {
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 13,
-                color: Color(0xFF0B2545),
+                color: AppColors.secondaryCalm,
               ),
             ),
             Container(
               margin: const EdgeInsets.only(top: 4.0),
               padding: const EdgeInsets.all(12.0),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.surfaceElevated,
                 borderRadius: const BorderRadius.only(
                   topRight: Radius.circular(16),
                   bottomLeft: Radius.circular(16),
                   bottomRight: Radius.circular(16),
                 ),
-                border: Border.all(color: const Color(0xFFE2E8F0)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.04),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+                border: Border.all(color: AppColors.borderSoft),
               ),
               child: Text(
                 text,
-                style: const TextStyle(fontSize: 14, color: Colors.black87, height: 1.3),
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: AppColors.textPrimary,
+                  height: 1.35,
+                ),
               ),
             ),
           ],
@@ -291,30 +297,27 @@ class ChatMessage extends StatelessWidget {
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 13,
-                color: Color(0xFF0066CC),
+                color: AppColors.primarySafety,
               ),
             ),
             Container(
               margin: const EdgeInsets.only(top: 4.0),
               padding: const EdgeInsets.all(12.0),
-              decoration: BoxDecoration(
-                color: const Color(0xFF0B2545),
-                borderRadius: const BorderRadius.only(
+              decoration: const BoxDecoration(
+                color: AppColors.primarySafety,
+                borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(16),
                   bottomLeft: Radius.circular(16),
                   bottomRight: Radius.circular(16),
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF0B2545).withValues(alpha: 0.2),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
               ),
               child: Text(
                 text,
-                style: const TextStyle(fontSize: 14, color: Colors.white, height: 1.3),
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.white,
+                  height: 1.35,
+                ),
               ),
             ),
           ],
@@ -323,7 +326,7 @@ class ChatMessage extends StatelessWidget {
       Container(
         margin: const EdgeInsets.only(left: 10.0),
         child: const CircleAvatar(
-          backgroundColor: Color(0xFF0B2545),
+          backgroundColor: AppColors.warmthTerracotta,
           foregroundColor: Colors.white,
           child: Icon(Icons.person, size: 20),
         ),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:safeherven_app/screens/settings/settings.dart';
 import 'package:safeherven_app/services/local_auth_service.dart';
+import 'package:safeherven_app/theme/app_colors.dart';
 
 class SafeHervenAppBar extends StatelessWidget implements PreferredSizeWidget {
-
   @override
   final Size preferredSize;
 
@@ -14,15 +14,15 @@ class SafeHervenAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.title, {
     super.key,
     required this.isHome,
-  })  : preferredSize = const Size.fromHeight(56.0);
+  }) : preferredSize = const Size.fromHeight(56.0);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      elevation: 3,
-      backgroundColor: const Color(0xFF0B2545),
-      shadowColor: const Color(0xFF0B2545).withValues(alpha: 0.4),
-      centerTitle: isHome ? true : false,
+      elevation: 1,
+      backgroundColor: AppColors.primarySafety,
+      surfaceTintColor: Colors.transparent,
+      centerTitle: isHome,
       title: isHome
           ? Image.asset('assets/images/logos/white.png', height: 40)
           : Text(
@@ -35,6 +35,7 @@ class SafeHervenAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
       actions: <Widget>[
         IconButton(
+          tooltip: 'Notificações',
           icon: const Icon(
             Icons.notifications_outlined,
             color: Colors.white,
@@ -42,7 +43,7 @@ class SafeHervenAppBar extends StatelessWidget implements PreferredSizeWidget {
           onPressed: () {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Text("Sem novas notificações no momento."),
+                content: Text('Sem novas notificações no momento.'),
                 duration: Duration(seconds: 2),
               ),
             );
@@ -54,37 +55,44 @@ class SafeHervenAppBar extends StatelessWidget implements PreferredSizeWidget {
             iconTheme: const IconThemeData(color: Colors.white),
           ),
           child: PopupMenuButton<int>(
-            color: const Color(0xFF0B2545),
+            color: AppColors.primaryDeep,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
-              side: const BorderSide(color: Color(0xFF0066CC), width: 1),
+              side: BorderSide(
+                color: AppColors.borderCalm.withValues(alpha: 0.4),
+                width: 1,
+              ),
             ),
             onSelected: (item) => onSelected(context, item),
             itemBuilder: (context) => [
-              PopupMenuItem<int>(
+              const PopupMenuItem<int>(
                 value: 0,
                 child: Row(
-                  children: const [
-                    Icon(Icons.settings, color: Colors.white, size: 20),
+                  children: [
+                    Icon(Icons.settings_outlined, color: Colors.white, size: 20),
                     SizedBox(width: 10),
                     Text(
-                      "Configurações",
+                      'Configurações',
                       style: TextStyle(color: Colors.white, fontSize: 15),
-                    )
+                    ),
                   ],
                 ),
               ),
               const PopupMenuDivider(),
-              PopupMenuItem<int>(
+              const PopupMenuItem<int>(
                 value: 1,
                 child: Row(
-                  children: const [
-                    Icon(Icons.logout, color: Color(0xFFD32F2F), size: 20),
+                  children: [
+                    Icon(
+                      Icons.door_front_door_outlined,
+                      color: AppColors.onPrimaryMuted,
+                      size: 20,
+                    ),
                     SizedBox(width: 10),
                     Text(
-                      "Sair",
+                      'Voltar à Entrada',
                       style: TextStyle(color: Colors.white, fontSize: 15),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -113,6 +121,3 @@ class SafeHervenAppBar extends StatelessWidget implements PreferredSizeWidget {
     }
   }
 }
-
-
-

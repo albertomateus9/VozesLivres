@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:safeherven_app/models/app_user.dart';
-import 'package:safeherven_app/screens/help.dart';
-import 'package:safeherven_app/screens/places.dart';
 import 'package:safeherven_app/screens/about.dart';
-import 'package:safeherven_app/screens/chat.dart';
-import 'package:safeherven_app/screens/home.dart';
 import 'package:safeherven_app/screens/alert.dart';
-import 'package:safeherven_app/screens/wrapper.dart';
+import 'package:safeherven_app/screens/chat.dart';
+import 'package:safeherven_app/screens/help.dart';
+import 'package:safeherven_app/screens/home.dart';
+import 'package:safeherven_app/screens/places.dart';
 import 'package:safeherven_app/services/local_auth_service.dart';
+import 'package:safeherven_app/theme/app_colors.dart';
 
 class MenuDrawer extends StatelessWidget {
   const MenuDrawer({super.key});
@@ -15,6 +15,7 @@ class MenuDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: AppColors.canvasWarm,
       child: ListView(
         padding: EdgeInsets.zero,
         children: buildMenuItems(context),
@@ -38,7 +39,7 @@ class MenuDrawer extends StatelessWidget {
       DrawerHeader(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF0B2545), Color(0xFF134074)],
+            colors: [AppColors.primarySafety, AppColors.secondaryCalm],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -46,7 +47,7 @@ class MenuDrawer extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Image.asset("assets/images/logos/white.png", width: 70, height: 70),
+            Image.asset('assets/images/logos/white.png', width: 68, height: 68),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -64,12 +65,12 @@ class MenuDrawer extends StatelessWidget {
                   width: 8,
                   height: 8,
                   decoration: const BoxDecoration(
-                    color: Color(0xFFD32F2F),
+                    color: AppColors.surfaceHugTint,
                     shape: BoxShape.circle,
                   ),
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),
@@ -96,37 +97,38 @@ class MenuDrawer extends StatelessWidget {
           icon = Icons.health_and_safety_rounded;
           break;
       }
-      Widget screen = Container();
+      final bool isEmergency = element == 'Alertas & Emergência';
       menuItems.add(
         ListTile(
           leading: Icon(
             icon,
-            color: element == 'Alertas & Emergência'
-                ? const Color(0xFFD32F2F)
-                : const Color(0xFF0066CC),
+            color: isEmergency
+                ? AppColors.protectiveAlert
+                : AppColors.secondaryCalm,
           ),
           title: Text(
             element,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: element == 'Alertas & Emergência'
-                  ? const Color(0xFFD32F2F)
-                  : const Color(0xFF0B2545),
+              color: isEmergency
+                  ? AppColors.protectiveAlert
+                  : AppColors.textPrimary,
             ),
           ),
           onTap: () {
+            late Widget screen;
             switch (element) {
               case 'Início':
                 screen = StreamBuilder<AppUser?>(
-                    initialData: LocalAuthService.instance.currentUser,
-                    stream: LocalAuthService.instance.authStateChanges,
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData || snapshot.data == null) {
-                        return const Wrapper();
-                      }
-                      return HomeScreen(user: snapshot.data!);
-                    });
+                  initialData: LocalAuthService.instance.currentUser,
+                  stream: LocalAuthService.instance.authStateChanges,
+                  builder: (context, snapshot) {
+                    final user = snapshot.data ??
+                        LocalAuthService.instance.ensureSession();
+                    return HomeScreen(user: user);
+                  },
+                );
                 break;
               case 'Locais Seguros':
                 screen = const PlacesScreen();
@@ -153,16 +155,18 @@ class MenuDrawer extends StatelessWidget {
       );
     }
 
-    menuItems.add(const Divider(thickness: 1, indent: 16, endIndent: 16));
+    menuItems.add(const Divider(indent: 16, endIndent: 16));
     menuItems.add(
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        child: ElevatedButton.icon(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFFF4F7FA),
-            foregroundColor: const Color(0xFFD32F2F),
-            side: const BorderSide(color: Color(0xFFD32F2F), width: 1),
-            padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+        child: OutlinedButton.icon(
+          style: OutlinedButton.styleFrom(
+            backgroundColor: AppColors.surfaceHugTint,
+            foregroundColor: AppColors.warmthTintText,
+            side: BorderSide(
+              color: AppColors.warmthTerracotta.withValues(alpha: 0.45),
+            ),
+            minimumSize: const Size(double.infinity, 48),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
@@ -174,9 +178,9 @@ class MenuDrawer extends StatelessWidget {
               Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
             }
           },
-          icon: const Icon(Icons.logout_rounded),
+          icon: const Icon(Icons.door_front_door_outlined),
           label: const Text(
-            "Sair da Conta",
+            'Voltar à Entrada',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
@@ -185,4 +189,3 @@ class MenuDrawer extends StatelessWidget {
     return menuItems;
   }
 }
-

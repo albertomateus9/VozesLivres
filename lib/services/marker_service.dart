@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:safeherven_app/theme/app_colors.dart';
 
 import '../models/place.dart';
 
@@ -57,13 +58,13 @@ class MarkerService {
           child: Container(
             decoration: BoxDecoration(
               color: isCurrentLocation
-                  ? const Color(0xFF0066CC)
-                  : const Color(0xFFD32F2F),
+                  ? AppColors.secondaryCalm
+                  : AppColors.warmthTerracotta,
               shape: BoxShape.circle,
               border: Border.all(color: Colors.white, width: 2.5),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.28),
+                  color: Colors.black.withValues(alpha: 0.24),
                   blurRadius: 6,
                   offset: const Offset(0, 2),
                 ),

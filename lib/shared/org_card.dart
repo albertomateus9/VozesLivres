@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:safeherven_app/models/organization.dart';
+import 'package:safeherven_app/theme/app_colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OrgCard extends StatefulWidget {
@@ -23,67 +24,72 @@ class _OrgCardState extends State<OrgCard> {
 
   Future<void> _callPhone(String phone) async {
     final String cleanPhone = phone.replaceAll(RegExp(r'[^0-9]'), '');
-    final Uri uri = Uri.parse("tel:$cleanPhone");
+    final Uri uri = Uri.parse('tel:$cleanPhone');
     try {
       final launched = await launchUrl(uri);
       if (!mounted) return;
       if (!launched) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Não foi possível ligar para $phone")),
+          SnackBar(content: Text('Não foi possível ligar para $phone')),
         );
       }
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Erro ao discar: $e")),
+        SnackBar(content: Text('Erro ao discar: $e')),
       );
     }
   }
 
   Future<void> _sendEmail(String email) async {
-    final Uri uri = Uri.parse("mailto:$email");
+    final Uri uri = Uri.parse('mailto:$email');
     try {
       final launched = await launchUrl(uri);
       if (!mounted) return;
       if (!launched) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Não foi possível enviar e-mail para $email")),
+          SnackBar(content: Text('Não foi possível enviar e-mail para $email')),
         );
       }
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Erro ao abrir e-mail: $e")),
+        SnackBar(content: Text('Erro ao abrir e-mail: $e')),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    String name = widget.ngo.name ?? 'Organização de Apoio';
-    String country = widget.ngo.country ?? 'Brasil';
-    String location = widget.ngo.location ?? 'Nacional';
-    String description = widget.ngo.description ?? 'Apoio e acolhimento para mulheres e sobreviventes de violência.';
-    String telephone = widget.ngo.telephone ?? '180';
-    String email = widget.ngo.email ?? 'contato@vozeslivres.org';
+    final String name = widget.ngo.name ?? 'Organização de Apoio';
+    final String country = widget.ngo.country ?? 'Brasil';
+    final String location = widget.ngo.location ?? 'Nacional';
+    final String description = widget.ngo.description ??
+        'Apoio e acolhimento para mulheres e sobreviventes de violência.';
+    final String telephone = widget.ngo.telephone ?? '180';
+    final String email = widget.ngo.email ?? 'contato@vozeslivres.org';
 
     return Semantics(
       container: true,
-      label: "Cartão de suporte de $name em $location",
+      label: 'Cartão de suporte de $name em $location',
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.0),
-          side: const BorderSide(color: Color(0xFFE2E8F0), width: 1),
+          side: const BorderSide(color: AppColors.borderSoft, width: 1),
         ),
-        elevation: 3,
-        shadowColor: const Color(0xFF0B2545).withValues(alpha: 0.12),
+        elevation: 0,
+        color: AppColors.surfaceElevated,
         margin: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 8.0),
         child: Padding(
           padding: const EdgeInsets.all(4.0),
           child: ExpansionTile(
-            backgroundColor: Colors.white,
-            title: _buildTitle(name, description, country, location, telephone, email),
-            trailing: const Icon(Icons.keyboard_arrow_down, color: Color(0xFF0066CC)),
+            backgroundColor: AppColors.surfaceElevated,
+            collapsedBackgroundColor: AppColors.surfaceElevated,
+            title: _buildTitle(name, country, location),
+            trailing: const Icon(
+              Icons.keyboard_arrow_down,
+              color: AppColors.secondaryCalm,
+            ),
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -92,7 +98,11 @@ class _OrgCardState extends State<OrgCard> {
                     Flexible(
                       child: Text(
                         description,
-                        style: const TextStyle(fontSize: 14, height: 1.4, color: Colors.black87),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          height: 1.4,
+                          color: AppColors.textPrimary,
+                        ),
                       ),
                     ),
                   ],
@@ -109,14 +119,18 @@ class _OrgCardState extends State<OrgCard> {
                         padding: const EdgeInsets.all(4.0),
                         child: Row(
                           children: [
-                            const Icon(Icons.phone, size: 18, color: Color(0xFF0066CC)),
+                            const Icon(
+                              Icons.phone,
+                              size: 18,
+                              color: AppColors.secondaryCalm,
+                            ),
                             const SizedBox(width: 6),
                             Text(
                               telephone,
                               style: const TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF0066CC),
+                                color: AppColors.secondaryCalm,
                                 decoration: TextDecoration.underline,
                               ),
                             ),
@@ -125,28 +139,35 @@ class _OrgCardState extends State<OrgCard> {
                       ),
                     ),
                     const Spacer(),
-                    InkWell(
-                      onTap: () => _sendEmail(email),
-                      borderRadius: BorderRadius.circular(8),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.email, size: 18, color: Color(0xFF0066CC)),
-                            const SizedBox(width: 6),
-                            Flexible(
-                              child: Text(
-                                email,
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF0066CC),
-                                  decoration: TextDecoration.underline,
-                                ),
-                                overflow: TextOverflow.ellipsis,
+                    Flexible(
+                      child: InkWell(
+                        onTap: () => _sendEmail(email),
+                        borderRadius: BorderRadius.circular(8),
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.email,
+                                size: 18,
+                                color: AppColors.secondaryCalm,
                               ),
-                            ),
-                          ],
+                              const SizedBox(width: 6),
+                              Flexible(
+                                child: Text(
+                                  email,
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.secondaryCalm,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -159,31 +180,43 @@ class _OrgCardState extends State<OrgCard> {
                   children: <Widget>[
                     Semantics(
                       button: true,
-                      label: "Votar a favor da organização $name",
+                      label: 'Votar a favor da organização $name',
                       child: IconButton(
                         onPressed: () {
                           setState(() {
                             voteCount++;
                           });
                         },
-                        icon: const Icon(Icons.thumb_up_outlined, color: Color(0xFF0066CC)),
+                        icon: const Icon(
+                          Icons.thumb_up_outlined,
+                          color: AppColors.secondaryCalm,
+                        ),
                       ),
                     ),
-                    const Text("Votar a favor", style: TextStyle(color: Colors.grey, fontSize: 12)),
+                    const Text(
+                      'Votar a favor',
+                      style: TextStyle(color: AppColors.textMuted, fontSize: 12),
+                    ),
                     const Spacer(),
                     Semantics(
                       button: true,
-                      label: "Votar contra a organização $name",
+                      label: 'Votar contra a organização $name',
                       child: IconButton(
                         onPressed: () {
                           setState(() {
                             if (voteCount > 0) voteCount--;
                           });
                         },
-                        icon: const Icon(Icons.thumb_down_outlined, color: Color(0xFFD32F2F)),
+                        icon: const Icon(
+                          Icons.thumb_down_outlined,
+                          color: AppColors.warmthText,
+                        ),
                       ),
                     ),
-                    const Text("Votar contra", style: TextStyle(color: Colors.grey, fontSize: 12)),
+                    const Text(
+                      'Votar contra',
+                      style: TextStyle(color: AppColors.textMuted, fontSize: 12),
+                    ),
                   ],
                 ),
               ),
@@ -194,7 +227,7 @@ class _OrgCardState extends State<OrgCard> {
     );
   }
 
-  Widget _buildTitle(String name, String description, String country, String location, String telephone, String email) {
+  Widget _buildTitle(String name, String country, String location) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -203,14 +236,14 @@ class _OrgCardState extends State<OrgCard> {
           style: const TextStyle(
             fontSize: 17,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF0B2545),
+            color: AppColors.primarySafety,
           ),
         ),
         const SizedBox(height: 2),
         Text(
-          "$location • $country",
+          '$location • $country',
           style: const TextStyle(
-            color: Colors.black54,
+            color: AppColors.textSecondary,
             fontSize: 13,
           ),
         ),
@@ -218,24 +251,27 @@ class _OrgCardState extends State<OrgCard> {
         Row(
           children: <Widget>[
             Text(
-              "$voteCount votos",
-              style: const TextStyle(fontSize: 13, color: Colors.black87),
+              '$voteCount votos',
+              style: const TextStyle(fontSize: 13, color: AppColors.textPrimary),
             ),
             const Spacer(),
             Semantics(
               button: true,
-              label: "Visitar site oficial da organização $name",
+              label: 'Visitar site oficial da organização $name',
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF0B2545),
+                  backgroundColor: AppColors.primarySafety,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.0),
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 14.0),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8.0,
+                    horizontal: 14.0,
+                  ),
                 ),
                 onPressed: _launchURL,
-                label: const Text("Visitar site", style: TextStyle(fontSize: 12)),
+                label: const Text('Visitar site', style: TextStyle(fontSize: 12)),
                 icon: const Icon(Icons.arrow_circle_right, size: 16),
               ),
             ),
@@ -245,35 +281,37 @@ class _OrgCardState extends State<OrgCard> {
           padding: EdgeInsets.only(top: 6.0, bottom: 2.0),
           child: Center(
             child: Text(
-              "Toque para ver mais detalhes",
-              style: TextStyle(fontSize: 11, color: Color(0xFF0066CC), fontWeight: FontWeight.w500),
+              'Toque para ver mais detalhes',
+              style: TextStyle(
+                fontSize: 11.5,
+                color: AppColors.secondaryCalm,
+                fontWeight: FontWeight.w600,
+              ),
               textAlign: TextAlign.center,
             ),
           ),
-        )
+        ),
       ],
     );
   }
 
   Future<void> _launchURL() async {
-    final String urlStr = widget.ngo.website ?? 'https://www.gov.br/mdh/pt-br/assuntos/violencia-contra-a-mulher';
+    final String urlStr = widget.ngo.website ??
+        'https://www.gov.br/mdh/pt-br/assuntos/violencia-contra-a-mulher';
     final Uri uri = Uri.parse(urlStr);
     try {
       final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
       if (!mounted) return;
       if (!launched) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Não foi possível abrir: $urlStr")),
+          SnackBar(content: Text('Não foi possível abrir: $urlStr')),
         );
       }
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Erro ao abrir link: $e")),
+        SnackBar(content: Text('Erro ao abrir link: $e')),
       );
     }
   }
 }
-
-
-

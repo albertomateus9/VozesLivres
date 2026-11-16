@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:safeherven_app/models/app_user.dart';
 import 'package:safeherven_app/screens/chat.dart';
 import 'package:safeherven_app/screens/help.dart';
-import 'package:safeherven_app/screens/places.dart';
 import 'package:safeherven_app/screens/home.dart';
-import 'package:safeherven_app/screens/wrapper.dart';
+import 'package:safeherven_app/screens/places.dart';
 import 'package:safeherven_app/services/local_auth_service.dart';
+import 'package:safeherven_app/theme/app_colors.dart';
 
 class MenuBottom extends StatefulWidget {
   final int currentIndex;
@@ -42,10 +42,9 @@ class _MenuBottomState extends State<MenuBottom> {
               initialData: LocalAuthService.instance.currentUser,
               stream: LocalAuthService.instance.authStateChanges,
               builder: (context, snapshot) {
-                if (!snapshot.hasData || snapshot.data == null) {
-                  return const Wrapper();
-                }
-                return HomeScreen(user: snapshot.data!);
+                final user =
+                    snapshot.data ?? LocalAuthService.instance.ensureSession();
+                return HomeScreen(user: user);
               },
             ),
           ),
@@ -75,24 +74,22 @@ class _MenuBottomState extends State<MenuBottom> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF0B2545).withValues(alpha: 0.12),
-            blurRadius: 12,
-            offset: const Offset(0, -3),
-          ),
-        ],
+      decoration: const BoxDecoration(
+        color: AppColors.surfaceElevated,
+        border: Border(top: BorderSide(color: AppColors.borderSoft)),
       ),
       child: BottomNavigationBar(
         currentIndex: _selectedIndex,
         type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
-        selectedItemColor: const Color(0xFF0B2545),
-        unselectedItemColor: Colors.grey.shade600,
-        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-        unselectedLabelStyle: const TextStyle(fontSize: 11),
+        backgroundColor: AppColors.surfaceElevated,
+        elevation: 0,
+        selectedItemColor: AppColors.primarySafety,
+        unselectedItemColor: AppColors.textMuted,
+        selectedLabelStyle: const TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 12,
+        ),
+        unselectedLabelStyle: const TextStyle(fontSize: 11.5),
         onTap: _onItemTapped,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -116,5 +113,3 @@ class _MenuBottomState extends State<MenuBottom> {
     );
   }
 }
-
-

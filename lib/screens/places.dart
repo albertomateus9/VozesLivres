@@ -9,6 +9,7 @@ import 'package:safeherven_app/blocs/application_bloc.dart';
 import 'package:safeherven_app/models/place.dart';
 import 'package:safeherven_app/shared/appbar.dart';
 import 'package:safeherven_app/shared/bottom.dart';
+import 'package:safeherven_app/theme/app_colors.dart';
 
 class PlacesScreen extends StatefulWidget {
   const PlacesScreen({super.key});
@@ -43,7 +44,7 @@ class _PlacesScreenState extends State<PlacesScreen> {
         _locationController.text = place.name!;
         _goToPlace(place);
       } else {
-        _locationController.text = "";
+        _locationController.text = '';
       }
     });
 
@@ -76,11 +77,11 @@ class _PlacesScreenState extends State<PlacesScreen> {
     final tappedPlace = applicationBloc.tappedMarkerPlace;
 
     return Scaffold(
-      appBar: const SafeHervenAppBar("Locais Seguros", isHome: false),
+      appBar: const SafeHervenAppBar('Locais Seguros', isHome: false),
       bottomNavigationBar: const MenuBottom(currentIndex: 1),
       body: (applicationBloc.currentLocation == null)
           ? const Center(
-              child: CircularProgressIndicator(color: Color(0xFF0B2545)),
+              child: CircularProgressIndicator(color: AppColors.primarySafety),
             )
           : ListView(
               children: [
@@ -90,11 +91,18 @@ class _PlacesScreenState extends State<PlacesScreen> {
                     controller: _locationController,
                     textCapitalization: TextCapitalization.words,
                     decoration: InputDecoration(
-                      hintText: "Buscar por localização ou cidade...",
-                      prefixIcon: const Icon(Icons.search, color: Color(0xFF0066CC)),
+                      hintText: 'Buscar por localização ou cidade...',
+                      hintStyle: const TextStyle(color: AppColors.textMuted),
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        color: AppColors.secondaryCalm,
+                      ),
                       suffixIcon: _locationController.text.isNotEmpty
                           ? IconButton(
-                              icon: const Icon(Icons.clear, color: Colors.grey),
+                              icon: const Icon(
+                                Icons.clear,
+                                color: AppColors.textMuted,
+                              ),
                               onPressed: () {
                                 _locationController.clear();
                                 applicationBloc.clearSelectedLocation();
@@ -102,18 +110,21 @@ class _PlacesScreenState extends State<PlacesScreen> {
                             )
                           : null,
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: AppColors.surfaceElevated,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16.0),
-                        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                        borderSide: const BorderSide(color: AppColors.borderSoft),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16.0),
-                        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                        borderSide: const BorderSide(color: AppColors.borderSoft),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16.0),
-                        borderSide: const BorderSide(color: Color(0xFF0066CC), width: 2),
+                        borderSide: const BorderSide(
+                          color: AppColors.primarySafety,
+                          width: 2,
+                        ),
                       ),
                     ),
                     onChanged: (value) => applicationBloc.searchPLaces(value),
@@ -135,7 +146,8 @@ class _PlacesScreenState extends State<PlacesScreen> {
                         ),
                         children: [
                           TileLayer(
-                            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            urlTemplate:
+                                'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                             userAgentPackageName: 'org.safeherven.app',
                           ),
                           MarkerLayer(
@@ -156,14 +168,14 @@ class _PlacesScreenState extends State<PlacesScreen> {
                         top: 12,
                         right: 12,
                         child: CircleAvatar(
-                          backgroundColor: Colors.white,
+                          backgroundColor: AppColors.surfaceElevated,
                           radius: 18,
                           child: SizedBox(
                             width: 18,
                             height: 18,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              color: Color(0xFF0B2545),
+                              color: AppColors.primarySafety,
                             ),
                           ),
                         ),
@@ -174,7 +186,7 @@ class _PlacesScreenState extends State<PlacesScreen> {
                         height: 320,
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF0B2545).withValues(alpha: .90),
+                          color: AppColors.primaryDeep.withValues(alpha: .92),
                         ),
                       ),
                     if (applicationBloc.searchResults != null &&
@@ -185,14 +197,22 @@ class _PlacesScreenState extends State<PlacesScreen> {
                           itemCount: applicationBloc.searchResults?.length ?? 0,
                           itemBuilder: (context, index) {
                             return ListTile(
-                              leading: const Icon(Icons.location_on, color: Colors.white),
+                              leading: const Icon(
+                                Icons.location_on,
+                                color: Colors.white,
+                              ),
                               title: Text(
-                                applicationBloc.searchResults![index].description.toString(),
-                                style: const TextStyle(color: Colors.white, fontSize: 14),
+                                applicationBloc.searchResults![index].description
+                                    .toString(),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                ),
                               ),
                               onTap: () {
                                 applicationBloc.setSelectedLocation(
-                                  applicationBloc.searchResults![index].placeId?.toString(),
+                                  applicationBloc.searchResults![index].placeId
+                                      ?.toString(),
                                 );
                               },
                             );
@@ -205,30 +225,45 @@ class _PlacesScreenState extends State<PlacesScreen> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
                     child: Card(
-                      color: const Color(0xFFEEF6FF),
+                      elevation: 0,
+                      color: AppColors.surfaceCalmTint,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
-                        side: const BorderSide(color: Color(0xFF0066CC), width: 1),
+                        side: const BorderSide(
+                          color: AppColors.borderCalm,
+                          width: 1,
+                        ),
                       ),
                       child: ListTile(
                         leading: const CircleAvatar(
-                          backgroundColor: Color(0xFF0B2545),
-                          child: Icon(Icons.shield_rounded, color: Colors.white, size: 20),
+                          backgroundColor: AppColors.primarySafety,
+                          child: Icon(
+                            Icons.shield_rounded,
+                            color: Colors.white,
+                            size: 20,
+                          ),
                         ),
                         title: Text(
                           tappedPlace.name ?? 'Local Seguro',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF0B2545),
+                            color: AppColors.primarySafety,
                             fontSize: 14,
                           ),
                         ),
                         subtitle: Text(
                           tappedPlace.vicinity ?? 'OpenStreetMap',
-                          style: const TextStyle(fontSize: 12, color: Colors.black87),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: AppColors.textSecondary,
+                          ),
                         ),
                         trailing: IconButton(
-                          icon: const Icon(Icons.close, size: 18),
+                          icon: const Icon(
+                            Icons.close,
+                            size: 18,
+                            color: AppColors.textSecondary,
+                          ),
                           onPressed: () => applicationBloc.selectMarkerPlace(null),
                         ),
                       ),
@@ -241,12 +276,15 @@ class _PlacesScreenState extends State<PlacesScreen> {
                     style: TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF0B2545),
+                      color: AppColors.primarySafety,
                     ),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12.0,
+                    vertical: 4.0,
+                  ),
                   child: Wrap(
                     spacing: 8.0,
                     runSpacing: 4.0,
@@ -277,18 +315,18 @@ class _PlacesScreenState extends State<PlacesScreen> {
       label: Text(
         label,
         style: TextStyle(
-          color: isSelected ? Colors.white : const Color(0xFF0B2545),
+          color: isSelected ? Colors.white : AppColors.textPrimary,
           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
         ),
       ),
       selected: isSelected,
-      selectedColor: const Color(0xFF0B2545),
-      backgroundColor: Colors.white,
+      selectedColor: AppColors.primarySafety,
+      backgroundColor: AppColors.surfaceElevated,
       checkmarkColor: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(
-          color: isSelected ? const Color(0xFF0B2545) : const Color(0xFFCBD5E1),
+          color: isSelected ? AppColors.primarySafety : AppColors.borderSoft,
         ),
       ),
       onSelected: (val) => bloc.togglePlaceType(type, val),
