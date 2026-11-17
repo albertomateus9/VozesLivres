@@ -215,6 +215,19 @@
   .chat-typing span:nth-child(3) { animation-delay: .4s; }
   @keyframes vl-blink { 0%, 80%, 100% { opacity: .3; } 40% { opacity: 1; } }
 
+  /* --- presentation mode (P = fullscreen, arrows = navigate) --- */
+  .nav-present { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--color-accent-300); background: transparent; color: var(--color-accent-700); border-radius: 12px; padding: 10px 14px; font-family: var(--font-heading); font-weight: var(--font-weight-heading); font-size: 14px; cursor: pointer; }
+  .nav-present:hover { background: var(--color-accent-100); }
+  .nav-present kbd { font-family: inherit; font-size: 11px; line-height: 1; border: 1px solid var(--color-accent-300); border-radius: 6px; padding: 3px 6px; }
+  @media (max-width: 900px) { .nav-present { display: none; } }
+  body.is-presenting .nav { display: none; }
+  body.is-presenting .to-top { display: none; }
+  .present-hud { position: fixed; right: 20px; bottom: 20px; z-index: 45; display: none; align-items: center; gap: 8px; background: rgba(45,35,38,0.9); color: var(--color-bg); border-radius: 999px; padding: 6px 6px 6px 16px; font-size: 13px; box-shadow: 0 8px 24px rgba(45,35,38,0.25); }
+  body.is-presenting .present-hud { display: flex; }
+  .present-hud .count { font-variant-numeric: tabular-nums; font-weight: 700; margin-right: 4px; }
+  .present-hud button { border: none; background: rgba(255,255,255,0.14); color: inherit; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 15px; line-height: 1; }
+  .present-hud button:hover { background: rgba(255,255,255,0.26); }
+
   @media (prefers-reduced-motion: reduce) {
     .reveal { opacity: 1; transform: none; transition: none; }
     .bar, .hbar-fill, #headline-bar, .chat-bubble, .chat-typing { transition: none; }
@@ -240,6 +253,7 @@
   <a href="#prototipo">Protótipo</a>
   <a href="#emergencia">Emergência</a>
   <a href="#instalar">Instalar</a>
+  <button type="button" class="nav-present" id="present-btn" title="Modo apresentação: tela cheia e setas para navegar (tecla P)">▶ Apresentar <kbd>P</kbd></button>
   <a class="btn btn-primary" href="https://github.com/albertomateus9/VozesLivres/releases/download/v1.1.0/VozesLivres-v1.1.0.apk">Baixar APK</a>
 </nav>
 
@@ -485,6 +499,12 @@ flutter build apk --release</pre>
 <div class="scroll-progress" id="scroll-progress"></div>
 <button type="button" class="to-top" id="to-top" aria-label="Voltar ao topo">↑</button>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="present-hud" id="present-hud">
+  <span class="count" id="present-count">1 / 11</span>
+  <button type="button" id="present-prev" aria-label="Anterior">←</button>
+  <button type="button" id="present-next" aria-label="Próximo">→</button>
+  <button type="button" id="present-exit" aria-label="Sair do modo apresentação">✕</button>
+</div>
 
 <div class="lightbox-overlay" id="lightbox-overlay" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Tela do aplicativo ampliada">
   <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Fechar">✕</button>
@@ -847,6 +867,117 @@ flutter build apk --release</pre>
         }
       });
     }
+  } catch (e) { /* no-op */ }
+
+  /* ---------- Presentation mode: P = fullscreen, arrows = next/previous ---------- */
+  try {
+    var stopSelectors = ['#problema', '#problema .grid-stats', '#solucao', '.band', '#funcionalidades', '#chat-demo', '#prototipo', '#telas', '#emergencia', '#instalar', '.closing'];
+    var stops = stopSelectors.map(function (sel) { return document.querySelector(sel); }).filter(Boolean);
+    var presenting = false;
+    var pendingY = null;
+    var lastNavAt = 0;
+    var navBar = document.querySelector('.nav');
+    var hudCount = document.getElementById('present-count');
+
+    function offset() { return presenting ? 28 : ((navBar ? navBar.offsetHeight : 0) + 16); }
+    function docTop(el) { return el.getBoundingClientRect().top + window.scrollY; }
+    function maxY() { return document.documentElement.scrollHeight - window.innerHeight; }
+    // while a smooth scroll is still running, keep counting from where it is heading
+    function baseY() { return (pendingY !== null && Date.now() - lastNavAt < 700) ? pendingY : window.scrollY; }
+    function currentIndex(y) {
+      var line = y + offset() + 8, idx = -1;
+      for (var i = 0; i < stops.length; i++) { if (docTop(stops[i]) <= line) idx = i; }
+      return idx;
+    }
+    function updateHud(y) {
+      if (!hudCount) return;
+      var yy = y === undefined ? window.scrollY : y;
+      var i = Math.max(0, currentIndex(yy));
+      if (yy >= maxY() - 2) i = stops.length - 1; // bottom of the page: the closing section is on screen
+      hudCount.textContent = (i + 1) + ' / ' + stops.length;
+    }
+    function go(y) {
+      y = Math.max(0, Math.min(maxY(), Math.round(y)));
+      pendingY = y;
+      lastNavAt = Date.now();
+      window.scrollTo({ top: y, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+      updateHud(y);
+    }
+    function next() {
+      var y = baseY(), view = window.innerHeight, idx = currentIndex(y);
+      if (idx < 0) { go(docTop(stops[0]) - offset()); return; }
+      var nextTop = idx + 1 < stops.length ? docTop(stops[idx + 1]) : null;
+      var end = nextTop !== null ? nextTop : document.documentElement.scrollHeight;
+      // the rest of this stop does not fit on screen: page through it first
+      if (end > y + view + 8) { go(Math.min(y + view * 0.85, nextTop !== null ? nextTop - offset() : maxY())); return; }
+      go(nextTop !== null ? nextTop - offset() : maxY());
+    }
+    function prev() {
+      var y = baseY(), view = window.innerHeight, idx = currentIndex(y);
+      if (idx < 0) { go(0); return; }
+      var top = docTop(stops[idx]) - offset();
+      if (top < y - 8) { go(Math.max(top, y - view * 0.85)); return; }
+      go(idx > 0 ? docTop(stops[idx - 1]) - offset() : 0);
+    }
+    function enterPresent() {
+      if (presenting) return;
+      var idx = Math.max(0, currentIndex(window.scrollY));
+      presenting = true;
+      document.body.classList.add('is-presenting');
+      var root = document.documentElement;
+      if (root.requestFullscreen && !document.fullscreenElement) {
+        var req = root.requestFullscreen();
+        if (req && req.catch) req.catch(function () { /* fullscreen refused: keep presenting in the window */ });
+      }
+      // snap to the section being shown once the nav is gone and the screen has resized
+      setTimeout(function () { pendingY = null; go(docTop(stops[idx]) - offset()); }, 350);
+      showToast('Modo apresentação · ← → para navegar · P ou Esc para sair');
+    }
+    function exitPresent() {
+      if (!presenting) return;
+      presenting = false;
+      document.body.classList.remove('is-presenting');
+      if (document.fullscreenElement && document.exitFullscreen) {
+        var ex = document.exitFullscreen();
+        if (ex && ex.catch) ex.catch(function () {});
+      }
+    }
+    document.addEventListener('fullscreenchange', function () {
+      if (!document.fullscreenElement && presenting) exitPresent();
+    });
+
+    // capture phase: decide before the lightbox handler can close its overlay on the same key
+    window.addEventListener('keydown', function (e) {
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      var t = e.target;
+      if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+      if (document.querySelector('.lightbox-overlay.is-open')) return;
+      var k = e.key;
+      if (k === 'p' || k === 'P') { e.preventDefault(); if (presenting) exitPresent(); else enterPresent(); return; }
+      var fwd = k === 'ArrowRight' || k === 'PageDown' || (presenting && (k === 'ArrowDown' || (k === ' ' && !e.shiftKey)));
+      var back = k === 'ArrowLeft' || k === 'PageUp' || (presenting && (k === 'ArrowUp' || (k === ' ' && e.shiftKey)));
+      if (fwd) { e.preventDefault(); next(); }
+      else if (back) { e.preventDefault(); prev(); }
+      else if (presenting && k === 'Escape') { exitPresent(); }
+      else if (presenting && k === 'Home') { e.preventDefault(); go(docTop(stops[0]) - offset()); }
+      else if (presenting && k === 'End') { e.preventDefault(); go(maxY()); }
+    }, true);
+
+    var hudTick = false;
+    window.addEventListener('scroll', function () {
+      if (!presenting || hudTick) return;
+      hudTick = true;
+      requestAnimationFrame(function () { hudTick = false; if (Date.now() - lastNavAt > 700) updateHud(); });
+    }, { passive: true });
+
+    function wire(id, fn) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('click', function () { el.blur(); fn(); });
+    }
+    wire('present-btn', enterPresent);
+    wire('present-prev', prev);
+    wire('present-next', next);
+    wire('present-exit', exitPresent);
   } catch (e) { /* no-op */ }
 
   /* ---------- Footer year ---------- */
