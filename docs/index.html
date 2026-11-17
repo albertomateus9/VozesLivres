@@ -156,6 +156,70 @@
   footer { max-width: 1200px; margin: 0 auto; padding: 32px clamp(20px, 5vw, 72px); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 32px; font-size: 14px; color: rgba(45,35,38,0.72); }
   footer .links { display: flex; gap: 20px; }
 
+  /* --- interactive layer --- */
+  .nav { transition: box-shadow .25s ease; }
+  .nav.is-scrolled { box-shadow: 0 4px 16px rgba(45,35,38,0.08); }
+  .nav a.is-active { color: var(--color-accent-700); }
+
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s cubic-bezier(.22,.61,.36,1), transform .7s cubic-bezier(.22,.61,.36,1); }
+  .reveal.is-visible { opacity: 1; transform: none; }
+
+  .bar { transition: height 1.1s cubic-bezier(.22,.61,.36,1); }
+  .hbar-fill { transition: width 1.1s cubic-bezier(.22,.61,.36,1); }
+  #headline-bar { transition: width 1.1s cubic-bezier(.22,.61,.36,1); }
+  .waffle span { transition: background-color .35s ease; }
+
+  .scroll-progress { position: fixed; top: 0; left: 0; height: 3px; width: 0%; background: var(--color-accent); z-index: 60; }
+
+  .to-top { position: fixed; right: 20px; bottom: 20px; width: 46px; height: 46px; border-radius: 50%; background: var(--color-accent); color: var(--color-bg); border: none; display: grid; place-items: center; font-size: 19px; line-height: 1; cursor: pointer; box-shadow: 0 8px 24px rgba(45,35,38,0.28); opacity: 0; pointer-events: none; transform: translateY(12px); transition: opacity .25s ease, transform .25s ease; z-index: 40; }
+  .to-top.is-visible { opacity: 1; pointer-events: auto; transform: none; }
+  .to-top:hover { background: var(--color-accent-700); }
+
+  .lightbox-overlay { position: fixed; inset: 0; background: rgba(20,14,16,0.88); display: flex; align-items: center; justify-content: center; z-index: 70; opacity: 0; pointer-events: none; transition: opacity .2s ease; padding: 24px; }
+  .lightbox-overlay.is-open { opacity: 1; pointer-events: auto; }
+  .lightbox-overlay figure { margin: 0; max-width: min(92vw, 420px); }
+  .lightbox-overlay img { width: 100%; border-radius: 20px; border: 6px solid var(--color-bg); display: block; }
+  .lightbox-overlay figcaption { color: var(--color-bg); text-align: center; margin-top: 14px; font-size: 15px; font-family: var(--font-heading); font-weight: 700; }
+  .lightbox-close, .lightbox-nav { position: absolute; background: rgba(255,255,255,0.14); color: var(--color-bg); border: none; border-radius: 50%; width: 44px; height: 44px; display: grid; place-items: center; font-size: 20px; cursor: pointer; }
+  .lightbox-close:hover, .lightbox-nav:hover { background: rgba(255,255,255,0.26); }
+  .lightbox-close { top: 20px; right: 20px; }
+  .lightbox-prev { left: 20px; top: 50%; transform: translateY(-50%); }
+  .lightbox-next { right: 20px; top: 50%; transform: translateY(-50%); }
+  .screen-frame { cursor: zoom-in; }
+  .screen-frame:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 2px; }
+  .qr-modal { image-rendering: pixelated; background: #fff; padding: 20px; }
+  .qr-chip img, .proto-qr img, .install-qr img { cursor: zoom-in; }
+
+  .toast { position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 16px); background: var(--color-text); color: var(--color-bg); padding: 12px 22px; border-radius: 999px; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity .25s ease, transform .25s ease; z-index: 80; }
+  .toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
+
+  .proto-browser { position: relative; }
+  .proto-loading { position: absolute; left: 0; right: 0; bottom: 0; top: 41px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; background: var(--color-bg); font-size: 14px; color: rgba(45,35,38,0.72); transition: opacity .3s ease; }
+  .proto-loading .spinner { width: 28px; height: 28px; border-radius: 50%; border: 3px solid var(--color-accent-300); border-top-color: var(--color-accent); animation: vl-spin 0.8s linear infinite; }
+  .proto-loading.is-hidden { opacity: 0; pointer-events: none; }
+  @keyframes vl-spin { to { transform: rotate(360deg); } }
+
+  .chat-demo { margin-top: 28px; background: var(--color-surface); border-radius: 20px; padding: 24px; }
+  .chat-demo-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+  .chat-demo-head strong { font-family: var(--font-heading); font-weight: var(--font-weight-heading); font-size: 17px; }
+  .chat-demo-replay { border: none; background: none; color: var(--color-accent-700); font-size: 13px; cursor: pointer; font-family: var(--font-heading); font-weight: 700; padding: 4px; }
+  .chat-bubbles { display: flex; flex-direction: column; gap: 10px; min-height: 172px; }
+  .chat-bubble { max-width: 78%; padding: 10px 16px; border-radius: 16px; font-size: 14px; line-height: 20px; opacity: 0; transform: translateY(6px); transition: opacity .3s ease, transform .3s ease; }
+  .chat-bubble.is-visible { opacity: 1; transform: none; }
+  .chat-bubble.from-user { align-self: flex-end; background: var(--color-accent); color: var(--color-bg); border-bottom-right-radius: 4px; }
+  .chat-bubble.from-angel { align-self: flex-start; background: var(--color-bg); border: 1px solid var(--color-divider); border-bottom-left-radius: 4px; max-width: 86%; }
+  .chat-typing { align-self: flex-start; display: flex; gap: 4px; padding: 14px 16px; background: var(--color-bg); border: 1px solid var(--color-divider); border-radius: 16px; border-bottom-left-radius: 4px; opacity: 0; transition: opacity .2s ease; }
+  .chat-typing.is-visible { opacity: 1; }
+  .chat-typing span { width: 6px; height: 6px; border-radius: 50%; background: rgba(45,35,38,0.4); animation: vl-blink 1.2s infinite ease-in-out; }
+  .chat-typing span:nth-child(2) { animation-delay: .2s; }
+  .chat-typing span:nth-child(3) { animation-delay: .4s; }
+  @keyframes vl-blink { 0%, 80%, 100% { opacity: .3; } 40% { opacity: 1; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .bar, .hbar-fill, #headline-bar, .chat-bubble, .chat-typing { transition: none; }
+  }
+
   @media (max-width: 640px) {
     #proto-iframe { height: 560px; }
   }
@@ -185,34 +249,36 @@
     <span class="kicker">O problema</span>
     <h1 style="font-size: clamp(40px, 6.4vw, 88px); margin: 0 0 0 -0.04em; max-width: 16ch;">21,4 milhões de brasileiras sofreram violência no último ano.</h1>
 
-    <div style="margin-top: clamp(32px, 4vw, 48px); height: 28px; border-radius: 999px; background: var(--color-accent-300); display: flex; overflow: hidden;">
-      <div style="width: 37.5%; background: var(--color-accent); border-radius: 999px;"></div>
-    </div>
-    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; margin-top: 12px; font-size: 14px; line-height: 20px;">
-      <span><strong style="font-family: var(--font-heading); font-weight: var(--font-weight-heading); color: var(--color-accent-700);">37,5%</strong> das mulheres com 16 anos ou mais · recorde da série</span>
-      <span class="muted">FBSP / Datafolha, Visível e Invisível (2025)</span>
+    <div class="reveal" id="headline-stat">
+      <div style="margin-top: clamp(32px, 4vw, 48px); height: 28px; border-radius: 999px; background: var(--color-accent-300); display: flex; overflow: hidden;">
+        <div id="headline-bar" data-target-width="37.5" style="width: 0%; background: var(--color-accent); border-radius: 999px;"></div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; margin-top: 12px; font-size: 14px; line-height: 20px;">
+        <span><strong class="count-up" data-count-to="37.5" data-decimals="1" data-suffix="%" style="font-family: var(--font-heading); font-weight: var(--font-weight-heading); color: var(--color-accent-700);">0%</strong> das mulheres com 16 anos ou mais · recorde da série</span>
+        <span class="muted">FBSP / Datafolha, Visível e Invisível (2025)</span>
+      </div>
     </div>
 
     <div class="grid-stats">
-      <figure class="stat-card">
+      <figure class="stat-card reveal">
         <figcaption>
           <p class="stat-title">Feminicídios batem recorde</p>
           <p class="stat-sub">Vítimas por ano · 4,3 por dia em 2025</p>
         </figcaption>
         <div class="bars">
-          <div><span class="val">449</span><div class="bar" style="height: 23.4%;"></div></div>
-          <div><span class="val">1.467</span><div class="bar" style="height: 76.5%;"></div></div>
-          <div><span class="val">1.504</span><div class="bar" style="height: 78.4%;"></div></div>
-          <div><span class="val">1.571</span><div class="bar is-latest" style="height: 82%;"></div></div>
+          <div><span class="val count-up" data-count-to="449">0</span><div class="bar" data-target-height="23.4" style="height: 0%;"></div></div>
+          <div><span class="val count-up" data-count-to="1467">0</span><div class="bar" data-target-height="76.5" style="height: 0%;"></div></div>
+          <div><span class="val count-up" data-count-to="1504">0</span><div class="bar" data-target-height="78.4" style="height: 0%;"></div></div>
+          <div><span class="val count-up" data-count-to="1571">0</span><div class="bar is-latest" data-target-height="82" style="height: 0%;"></div></div>
         </div>
         <div class="bar-years"><span>2015</span><span>2023</span><span>2024</span><span>2025</span></div>
         <p class="stat-source">FBSP, Anuário Brasileiro de Segurança Pública (2025 e 2026)</p>
       </figure>
 
-      <figure class="stat-card">
+      <figure class="stat-card reveal">
         <figcaption>
           <p class="stat-title">8 em cada 10 autores eram parceiros ou ex</p>
-          <p class="stat-sub">79,8% dos feminicídios com autoria identificada</p>
+          <p class="stat-sub"><span class="count-up" data-count-to="79.8" data-decimals="1">0</span>% dos feminicídios com autoria identificada</p>
         </figcaption>
         <div class="waffle" id="waffle"></div>
         <div class="legend">
@@ -222,27 +288,27 @@
         <p class="stat-source">FBSP, 20º Anuário Brasileiro de Segurança Pública (2026)</p>
       </figure>
 
-      <figure class="stat-card">
+      <figure class="stat-card reveal">
         <figcaption>
           <p class="stat-title">O que elas sofreram</p>
           <p class="stat-sub">% das brasileiras, últimos 12 meses</p>
         </figcaption>
         <div class="hbars">
-          <div class="hbar-row"><div class="hbar-top"><span>Insultos e humilhações</span><strong>31,4%</strong></div><div class="hbar-track"><div class="hbar-fill" style="width: 78.5%;"></div></div></div>
-          <div class="hbar-row"><div class="hbar-top"><span>Agressão física</span><strong>16,9%</strong></div><div class="hbar-track"><div class="hbar-fill" style="width: 42.3%;"></div></div></div>
-          <div class="hbar-row"><div class="hbar-top"><span>Perseguição (stalking)</span><strong>16%</strong></div><div class="hbar-track"><div class="hbar-fill" style="width: 40%;"></div></div></div>
-          <div class="hbar-row"><div class="hbar-top"><span>Violência sexual</span><strong>11%</strong></div><div class="hbar-track"><div class="hbar-fill" style="width: 27.5%;"></div></div></div>
-          <div class="hbar-row"><div class="hbar-top"><span>Divulgação de fotos íntimas</span><strong>4%</strong></div><div class="hbar-track"><div class="hbar-fill" style="width: 10%;"></div></div></div>
+          <div class="hbar-row"><div class="hbar-top"><span>Insultos e humilhações</span><strong><span class="count-up" data-count-to="31.4" data-decimals="1">0</span>%</strong></div><div class="hbar-track"><div class="hbar-fill" data-target-width="78.5" style="width: 0%;"></div></div></div>
+          <div class="hbar-row"><div class="hbar-top"><span>Agressão física</span><strong><span class="count-up" data-count-to="16.9" data-decimals="1">0</span>%</strong></div><div class="hbar-track"><div class="hbar-fill" data-target-width="42.3" style="width: 0%;"></div></div></div>
+          <div class="hbar-row"><div class="hbar-top"><span>Perseguição (stalking)</span><strong><span class="count-up" data-count-to="16">0</span>%</strong></div><div class="hbar-track"><div class="hbar-fill" data-target-width="40" style="width: 0%;"></div></div></div>
+          <div class="hbar-row"><div class="hbar-top"><span>Violência sexual</span><strong><span class="count-up" data-count-to="11">0</span>%</strong></div><div class="hbar-track"><div class="hbar-fill" data-target-width="27.5" style="width: 0%;"></div></div></div>
+          <div class="hbar-row"><div class="hbar-top"><span>Divulgação de fotos íntimas</span><strong><span class="count-up" data-count-to="4">0</span>%</strong></div><div class="hbar-track"><div class="hbar-fill" data-target-width="10" style="width: 0%;"></div></div></div>
         </div>
         <p class="stat-source">FBSP / Datafolha, Visível e Invisível, 5ª ed. (2025)</p>
       </figure>
 
-      <figure class="stat-card">
+      <figure class="stat-card reveal">
         <figcaption>
           <p class="stat-title">Quase sempre havia testemunhas</p>
           <p class="stat-sub">Casos de violência presenciados por outras pessoas</p>
         </figcaption>
-        <div class="donut"><div class="donut-inner"><span>91,8%</span></div></div>
+        <div class="donut" id="donut" data-target="91.8" style="background: conic-gradient(var(--color-accent-300) 0 0%, var(--color-accent-300) 0% 100%);"><div class="donut-inner"><span><span class="count-up" data-count-to="91.8" data-decimals="1">0</span>%</span></div></div>
         <p class="stat-source">FBSP / Datafolha, Visível e Invisível, 5ª ed. (2025)</p>
       </figure>
     </div>
@@ -270,13 +336,13 @@
         <span><strong>Escaneie para baixar</strong>Aponte a câmera do celular</span>
       </a>
     </div>
-    <figure class="phone-shot">
+    <figure class="phone-shot reveal">
       <img src="assets/images/01_tela_entrada.png" alt="Tela de entrada do Vozes Livres">
     </figure>
   </section>
 
   <section class="section-pad" style="padding-top: 0;">
-    <div class="band">
+    <div class="band reveal">
       <div style="flex: 1 1 320px;">
         <span class="kicker" style="color: var(--color-accent-200);">Apresentação na nossa escola</span>
         <p style="font-family: var(--font-heading); font-weight: var(--font-weight-heading); font-size: clamp(28px, 3.6vw, 44px); line-height: 1.05; letter-spacing: -0.015em; margin-top: 12px;">EETEPA Vilhena Alves</p>
@@ -291,11 +357,26 @@
   <section id="funcionalidades" class="section-pad" style="padding-top: 0;">
     <h2 style="font-size: clamp(30px, 3.4vw, 44px);">O que você encontra</h2>
     <div class="features-grid">
-      <div class="feature-card"><span class="feature-num">01</span><h3>Assistente Angel</h3><p>Escuta sigilosa e orientação, mesmo offline.</p></div>
-      <div class="feature-card"><span class="feature-num">02</span><h3>Mapa de apoio</h3><p>Delegacias, hospitais e postos de saúde perto de você.</p></div>
-      <div class="feature-card"><span class="feature-num">03</span><h3>Rede de apoio</h3><p>ONGs e serviços com discagem em um toque.</p></div>
-      <div class="feature-card"><span class="feature-num">04</span><h3>Emergência</h3><p>100, 180, 190, 192 e 188 a um toque.</p></div>
-      <div class="feature-card"><span class="feature-num">05</span><h3>Privacidade</h3><p>Sem cadastro. Seus dados ficam no aparelho.</p></div>
+      <div class="feature-card reveal"><span class="feature-num">01</span><h3>Assistente Angel</h3><p>Escuta sigilosa e orientação, mesmo offline.</p></div>
+      <div class="feature-card reveal"><span class="feature-num">02</span><h3>Mapa de apoio</h3><p>Delegacias, hospitais e postos de saúde perto de você.</p></div>
+      <div class="feature-card reveal"><span class="feature-num">03</span><h3>Rede de apoio</h3><p>ONGs e serviços com discagem em um toque.</p></div>
+      <div class="feature-card reveal"><span class="feature-num">04</span><h3>Emergência</h3><p>100, 180, 190, 192 e 188 a um toque.</p></div>
+      <div class="feature-card reveal"><span class="feature-num">05</span><h3>Privacidade</h3><p>Sem cadastro. Seus dados ficam no aparelho.</p></div>
+    </div>
+
+    <div class="chat-demo reveal" id="chat-demo">
+      <div class="chat-demo-head">
+        <strong>Veja a Angel em ação</strong>
+        <button type="button" class="chat-demo-replay" id="chat-demo-replay">↺ Reiniciar</button>
+      </div>
+      <div class="chat-bubbles" id="chat-bubbles">
+        <div class="chat-bubble from-user" data-order="1">Estou com medo de voltar pra casa agora.</div>
+        <div class="chat-typing" data-order="2"><span></span><span></span><span></span></div>
+        <div class="chat-bubble from-angel" data-order="3">Sinto muito que você esteja passando por isso. Você não está sozinha. Quer que eu mostre os pontos de apoio mais perto de você, ou prefere falar com a Central da Mulher (180) agora?</div>
+        <div class="chat-bubble from-user" data-order="4">Pontos de apoio, por favor.</div>
+        <div class="chat-typing" data-order="5"><span></span><span></span><span></span></div>
+        <div class="chat-bubble from-angel" data-order="6">Encontrei 3 locais seguros a menos de 2 km: uma delegacia, um posto de saúde e uma ONG parceira. Posso traçar a rota até o mais próximo?</div>
+      </div>
     </div>
   </section>
 
@@ -304,22 +385,23 @@
     <h2 style="font-size: clamp(30px, 3.4vw, 44px); margin-bottom: 8px;">Experimente agora, direto no navegador</h2>
     <p class="muted" style="max-width: 60ch; margin-bottom: 32px;">Esta é a mesma versão web do aplicativo, publicada automaticamente a partir do código-fonte. Interaja com ela aqui mesmo, sem instalar nada.</p>
     <div id="prototipo-section">
-      <div class="proto-frame-wrap">
+      <div class="proto-frame-wrap reveal">
         <div class="proto-browser">
           <div class="proto-browser-bar">
             <span class="dots"><span></span><span></span><span></span></span>
             <span class="url">albertomateus9.github.io/VozesLivres/app/</span>
             <a class="btn btn-ghost" href="app/" target="_blank" rel="noopener" style="padding: 4px 10px; font-size: 12px;">Abrir em nova aba ↗</a>
           </div>
+          <div class="proto-loading" id="proto-loading"><div class="spinner"></div><span>Carregando o protótipo…</span></div>
           <iframe id="proto-iframe" src="app/" title="Vozes Livres — protótipo funcional (versão web)" loading="lazy" allow="geolocation; clipboard-read; clipboard-write"></iframe>
         </div>
       </div>
       <div class="proto-side">
-        <div class="proto-note">
+        <div class="proto-note reveal">
           <strong>Como testar</strong>
           Use o menu lateral para navegar entre o chat da Angel, o mapa de pontos de apoio e a rede de ONGs. Alguns recursos do aparelho (como discagem direta e localização precisa) funcionam de forma limitada dentro do navegador, comparado ao app instalado.
         </div>
-        <div class="proto-qr">
+        <div class="proto-qr reveal">
           <img src="assets/qr-apk.png" alt="QR Code para baixar o APK do Vozes Livres">
           <p>Prefere no celular?<br>Baixe o APK</p>
           <a class="btn btn-primary" style="justify-content: center;" href="https://github.com/albertomateus9/VozesLivres/releases/download/v1.1.0/VozesLivres-v1.1.0.apk">Baixar APK v1.1.0</a>
@@ -331,12 +413,12 @@
   <section id="telas" class="section-pad section-divider">
     <h2 style="font-size: clamp(30px, 3.4vw, 44px);">Telas do aplicativo</h2>
     <div class="screens-grid">
-      <figure><div class="screen-frame"><img src="assets/images/01_tela_entrada.png" alt="Entrada direta" loading="lazy"></div><figcaption>Entrada direta</figcaption></figure>
-      <figure><div class="screen-frame"><img src="assets/images/02_tela_home.png" alt="Painel inicial" loading="lazy"></div><figcaption>Painel inicial</figcaption></figure>
-      <figure><div class="screen-frame"><img src="assets/images/03_tela_mapa.png" alt="Mapa de apoio" loading="lazy"></div><figcaption>Mapa de apoio</figcaption></figure>
-      <figure><div class="screen-frame"><img src="assets/images/04_tela_ajuda_ongs.png" alt="Rede de apoio" loading="lazy"></div><figcaption>Rede de apoio</figcaption></figure>
-      <figure><div class="screen-frame"><img src="assets/images/05_tela_chat.png" alt="Conversa com a Angel" loading="lazy"></div><figcaption>Conversa com a Angel</figcaption></figure>
-      <figure><div class="screen-frame"><img src="assets/images/07_tela_alertas.png" alt="Emergência" loading="lazy"></div><figcaption>Emergência</figcaption></figure>
+      <figure class="reveal"><div class="screen-frame"><img src="assets/images/01_tela_entrada.png" alt="Entrada direta" loading="lazy"></div><figcaption>Entrada direta</figcaption></figure>
+      <figure class="reveal"><div class="screen-frame"><img src="assets/images/02_tela_home.png" alt="Painel inicial" loading="lazy"></div><figcaption>Painel inicial</figcaption></figure>
+      <figure class="reveal"><div class="screen-frame"><img src="assets/images/03_tela_mapa.png" alt="Mapa de apoio" loading="lazy"></div><figcaption>Mapa de apoio</figcaption></figure>
+      <figure class="reveal"><div class="screen-frame"><img src="assets/images/04_tela_ajuda_ongs.png" alt="Rede de apoio" loading="lazy"></div><figcaption>Rede de apoio</figcaption></figure>
+      <figure class="reveal"><div class="screen-frame"><img src="assets/images/05_tela_chat.png" alt="Conversa com a Angel" loading="lazy"></div><figcaption>Conversa com a Angel</figcaption></figure>
+      <figure class="reveal"><div class="screen-frame"><img src="assets/images/07_tela_alertas.png" alt="Emergência" loading="lazy"></div><figcaption>Emergência</figcaption></figure>
     </div>
   </section>
 
@@ -344,11 +426,11 @@
     <h2 style="font-size: clamp(30px, 3.4vw, 44px); margin-bottom: 8px;">Precisa de ajuda agora? Ligue.</h2>
     <p class="muted" style="margin-bottom: 0;">Gratuito, em todo o Brasil. Toque para discar.</p>
     <div class="hotlines-grid">
-      <a class="hotline" href="tel:100"><span class="num">100</span><span class="name">Direitos Humanos</span></a>
-      <a class="hotline" href="tel:180"><span class="num">180</span><span class="name">Central da Mulher</span></a>
-      <a class="hotline" href="tel:190"><span class="num">190</span><span class="name">Polícia Militar</span></a>
-      <a class="hotline" href="tel:192"><span class="num">192</span><span class="name">SAMU</span></a>
-      <a class="hotline" href="tel:188"><span class="num">188</span><span class="name">CVV</span></a>
+      <a class="hotline reveal" href="tel:100"><span class="num">100</span><span class="name">Direitos Humanos</span></a>
+      <a class="hotline reveal" href="tel:180"><span class="num">180</span><span class="name">Central da Mulher</span></a>
+      <a class="hotline reveal" href="tel:190"><span class="num">190</span><span class="name">Polícia Militar</span></a>
+      <a class="hotline reveal" href="tel:192"><span class="num">192</span><span class="name">SAMU</span></a>
+      <a class="hotline reveal" href="tel:188"><span class="num">188</span><span class="name">CVV</span></a>
     </div>
   </section>
 
@@ -374,7 +456,7 @@ flutter run
 flutter build apk --release</pre>
       </details>
     </div>
-    <div class="install-qr">
+    <div class="install-qr reveal">
       <img src="assets/qr-apk.png" alt="QR Code para baixar o APK do Vozes Livres">
       <p>Aponte a câmera para baixar</p>
     </div>
@@ -384,7 +466,7 @@ flutter build apk --release</pre>
 
 <section class="closing">
   <div class="closing-inner">
-    <h2>Você não está sozinha.</h2>
+    <h2 class="reveal">Você não está sozinha.</h2>
     <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px;">
       <a class="btn btn-ghost-inverse" href="https://github.com/albertomateus9/VozesLivres/releases/download/v1.1.0/VozesLivres-v1.1.0.apk">Baixar o Vozes Livres</a>
     </div>
@@ -392,23 +474,388 @@ flutter build apk --release</pre>
 </section>
 
 <footer>
-  <span>Projeto Cultura de Paz, Ciência e Tecnologia · EETEPA Vilhena Alves</span>
+  <span>Projeto Cultura de Paz, Ciência e Tecnologia · EETEPA Vilhena Alves · © <span id="footer-year"></span></span>
   <span class="links">
     <a href="https://github.com/albertomateus9/VozesLivres">GitHub</a>
     <a href="https://github.com/albertomateus9/VozesLivres/blob/main/LICENSE">Licença</a>
+    <button type="button" id="copy-link-btn" class="btn btn-ghost" style="padding: 4px 10px; font-size: 13px;">🔗 Copiar link</button>
   </span>
 </footer>
 
+<div class="scroll-progress" id="scroll-progress"></div>
+<button type="button" class="to-top" id="to-top" aria-label="Voltar ao topo">↑</button>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<div class="lightbox-overlay" id="lightbox-overlay" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Tela do aplicativo ampliada">
+  <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Fechar">✕</button>
+  <button type="button" class="lightbox-nav lightbox-prev" id="lightbox-prev" aria-label="Imagem anterior">‹</button>
+  <figure>
+    <img id="lightbox-img" src="" alt="">
+    <figcaption id="lightbox-caption"></figcaption>
+  </figure>
+  <button type="button" class="lightbox-nav lightbox-next" id="lightbox-next" aria-label="Próxima imagem">›</button>
+</div>
+
+<div class="lightbox-overlay" id="qr-overlay" role="dialog" aria-modal="true" aria-hidden="true" aria-label="QR code ampliado">
+  <button type="button" class="lightbox-close" id="qr-close" aria-label="Fechar">✕</button>
+  <figure>
+    <img id="qr-modal-img" class="qr-modal" src="" alt="QR Code para baixar o APK do Vozes Livres">
+    <figcaption>Aponte a câmera do celular para baixar o APK</figcaption>
+  </figure>
+</div>
+
 <script>
-  // Waffle chart: 80 of 100 dots highlighted (79.8%, rounded for the grid)
-  (function () {
+(function () {
+  'use strict';
+  var prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- Waffle chart: 80 of 100 dots, staggered on reveal ---------- */
+  var waffleDots = [];
+  try {
     var w = document.getElementById('waffle');
-    for (var i = 0; i < 100; i++) {
-      var s = document.createElement('span');
-      if (i < 80) s.className = 'on';
-      w.appendChild(s);
+    if (w) {
+      for (var i = 0; i < 100; i++) {
+        var s = document.createElement('span');
+        w.appendChild(s);
+        waffleDots.push(s);
+      }
     }
-  })();
+  } catch (e) { /* no-op */ }
+
+  function playWaffle() {
+    try {
+      if (prefersReducedMotion) {
+        waffleDots.forEach(function (s, i) { if (i < 80) s.classList.add('on'); });
+        return;
+      }
+      waffleDots.forEach(function (s, i) {
+        if (i < 80) setTimeout(function () { s.classList.add('on'); }, i * 7);
+      });
+    } catch (e) { /* no-op */ }
+  }
+
+  /* ---------- Number count-up ---------- */
+  function formatNum(n, decimals) {
+    try {
+      return n.toLocaleString('pt-BR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    } catch (e) {
+      return n.toFixed(decimals);
+    }
+  }
+
+  function animateCount(el) {
+    var target = parseFloat(el.getAttribute('data-count-to'));
+    if (isNaN(target)) return;
+    var decimals = parseInt(el.getAttribute('data-decimals') || '0', 10);
+    var suffix = el.getAttribute('data-suffix') || '';
+    var prefix = el.getAttribute('data-prefix') || '';
+    if (prefersReducedMotion) {
+      el.textContent = prefix + formatNum(target, decimals) + suffix;
+      return;
+    }
+    var duration = 1400;
+    var start = null;
+    function step(ts) {
+      if (!start) start = ts;
+      var p = Math.min((ts - start) / duration, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = prefix + formatNum(target * eased, decimals) + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* ---------- Donut chart animation ---------- */
+  function animateDonut(el) {
+    var target = parseFloat(el.getAttribute('data-target'));
+    if (isNaN(target)) return;
+    function paint(pct) {
+      el.style.background = 'conic-gradient(var(--color-accent) 0 ' + pct + '%, var(--color-accent-300) ' + pct + '% 100%)';
+    }
+    if (prefersReducedMotion) { paint(target); return; }
+    var duration = 1400;
+    var start = null;
+    function step(ts) {
+      if (!start) start = ts;
+      var p = Math.min((ts - start) / duration, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      paint(target * eased);
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* ---------- Bars / hbars / headline bar width-height reveal ---------- */
+  function animateBarsIn(root) {
+    try {
+      root.querySelectorAll('[data-target-height]').forEach(function (bar) {
+        bar.style.height = bar.getAttribute('data-target-height') + '%';
+      });
+      root.querySelectorAll('[data-target-width]').forEach(function (bar) {
+        bar.style.width = bar.getAttribute('data-target-width') + '%';
+      });
+    } catch (e) { /* no-op */ }
+  }
+
+  /* ---------- Chat demo ---------- */
+  function playChatDemo() {
+    try {
+      var items = Array.prototype.slice.call(document.querySelectorAll('#chat-bubbles [data-order]'));
+      items.sort(function (a, b) { return (+a.getAttribute('data-order')) - (+b.getAttribute('data-order')); });
+      items.forEach(function (el) { el.classList.remove('is-visible'); });
+      if (prefersReducedMotion) {
+        items.forEach(function (el) { if (!el.classList.contains('chat-typing')) el.classList.add('is-visible'); else el.style.display = 'none'; });
+        return;
+      }
+      items.forEach(function (el) { el.style.display = ''; });
+      var delay = 250;
+      items.forEach(function (el) {
+        var isTyping = el.classList.contains('chat-typing');
+        var dur = isTyping ? 850 : 1500;
+        (function (el, dur, isTyping, delay) {
+          setTimeout(function () {
+            el.classList.add('is-visible');
+            if (isTyping) setTimeout(function () { el.classList.remove('is-visible'); }, dur - 150);
+          }, delay);
+        })(el, dur, isTyping, delay);
+        delay += dur;
+      });
+    } catch (e) { /* no-op */ }
+  }
+
+  /* ---------- Reveal-on-scroll (drives everything above too) ---------- */
+  function revealElement(el) {
+    el.classList.add('is-visible');
+    animateBarsIn(el);
+    try {
+      el.querySelectorAll('.count-up').forEach(function (c) { animateCount(c); });
+    } catch (e) { /* no-op */ }
+    if (el.id === 'waffle' || el.querySelector('#waffle')) playWaffle();
+    var donut = el.id === 'donut' ? el : (el.querySelector ? el.querySelector('#donut') : null);
+    if (donut) animateDonut(donut);
+    if (el.id === 'chat-demo') playChatDemo();
+  }
+
+  try {
+    var revealEls = Array.prototype.slice.call(document.querySelectorAll('.reveal'));
+    if (!('IntersectionObserver' in window) || prefersReducedMotion) {
+      revealEls.forEach(revealElement);
+    } else {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            revealElement(entry.target);
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2, rootMargin: '0px 0px -5% 0px' });
+      revealEls.forEach(function (el) { io.observe(el); });
+    }
+  } catch (e) { /* no-op */ }
+
+  /* Safety net: never leave content invisible if something above failed */
+  setTimeout(function () {
+    document.querySelectorAll('.reveal:not(.is-visible)').forEach(revealElement);
+  }, 4000);
+
+  /* ---------- Scrollspy ---------- */
+  try {
+    var navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav a[href^="#"]'));
+    var spySections = navLinks
+      .map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); })
+      .filter(Boolean);
+    if ('IntersectionObserver' in window && spySections.length) {
+      var spy = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            navLinks.forEach(function (a) {
+              a.classList.toggle('is-active', a.getAttribute('href') === '#' + entry.target.id);
+            });
+          }
+        });
+      }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+      spySections.forEach(function (s) { spy.observe(s); });
+    }
+  } catch (e) { /* no-op */ }
+
+  /* ---------- Scroll-driven chrome: nav shadow, progress bar, back-to-top ---------- */
+  try {
+    var navEl = document.querySelector('.nav');
+    var progressEl = document.getElementById('scroll-progress');
+    var toTopEl = document.getElementById('to-top');
+    var ticking = false;
+    function onScroll() {
+      var y = window.scrollY || window.pageYOffset;
+      if (navEl) navEl.classList.toggle('is-scrolled', y > 4);
+      if (toTopEl) toTopEl.classList.toggle('is-visible', y > 600);
+      if (progressEl) {
+        var max = document.documentElement.scrollHeight - window.innerHeight;
+        progressEl.style.width = (max > 0 ? Math.min(100, (y / max) * 100) : 0) + '%';
+      }
+      ticking = false;
+    }
+    window.addEventListener('scroll', function () {
+      if (!ticking) { requestAnimationFrame(onScroll); ticking = true; }
+    }, { passive: true });
+    onScroll();
+    if (toTopEl) {
+      toTopEl.addEventListener('click', function () {
+        window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+      });
+    }
+  } catch (e) { /* no-op */ }
+
+  /* ---------- Prototype iframe loading overlay ---------- */
+  try {
+    var iframeEl = document.getElementById('proto-iframe');
+    var loadingEl = document.getElementById('proto-loading');
+    if (iframeEl && loadingEl) {
+      var hideLoading = function () { loadingEl.classList.add('is-hidden'); };
+      iframeEl.addEventListener('load', hideLoading);
+      setTimeout(hideLoading, 9000);
+    }
+  } catch (e) { /* no-op */ }
+
+  /* ---------- Screenshot lightbox gallery ---------- */
+  try {
+    var galleryFigs = Array.prototype.slice.call(document.querySelectorAll('.screens-grid figure'));
+    var lightboxOverlay = document.getElementById('lightbox-overlay');
+    var lightboxImg = document.getElementById('lightbox-img');
+    var lightboxCaption = document.getElementById('lightbox-caption');
+    var lightboxClose = document.getElementById('lightbox-close');
+    var lightboxPrev = document.getElementById('lightbox-prev');
+    var lightboxNext = document.getElementById('lightbox-next');
+    var lightboxIndex = 0;
+    var lastFocused = null;
+
+    function openLightbox(i) {
+      if (!galleryFigs.length) return;
+      lightboxIndex = (i + galleryFigs.length) % galleryFigs.length;
+      var fig = galleryFigs[lightboxIndex];
+      var img = fig.querySelector('img');
+      var cap = fig.querySelector('figcaption');
+      lightboxImg.src = img.src;
+      lightboxImg.alt = img.alt || '';
+      lightboxCaption.textContent = cap ? cap.textContent : '';
+      lastFocused = document.activeElement;
+      lightboxOverlay.classList.add('is-open');
+      lightboxOverlay.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      if (lightboxClose) lightboxClose.focus();
+    }
+    function closeLightbox() {
+      lightboxOverlay.classList.remove('is-open');
+      lightboxOverlay.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      if (lastFocused && lastFocused.focus) lastFocused.focus();
+    }
+    galleryFigs.forEach(function (fig, i) {
+      var frame = fig.querySelector('.screen-frame');
+      if (!frame) return;
+      var cap = fig.querySelector('figcaption');
+      frame.setAttribute('role', 'button');
+      frame.setAttribute('tabindex', '0');
+      frame.setAttribute('aria-label', 'Ampliar imagem: ' + (cap ? cap.textContent : ''));
+      frame.addEventListener('click', function () { openLightbox(i); });
+      frame.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLightbox(i); }
+      });
+    });
+    if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
+    if (lightboxOverlay) lightboxOverlay.addEventListener('click', function (e) { if (e.target === lightboxOverlay) closeLightbox(); });
+    if (lightboxPrev) lightboxPrev.addEventListener('click', function () { openLightbox(lightboxIndex - 1); });
+    if (lightboxNext) lightboxNext.addEventListener('click', function () { openLightbox(lightboxIndex + 1); });
+    document.addEventListener('keydown', function (e) {
+      if (!lightboxOverlay || !lightboxOverlay.classList.contains('is-open')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') openLightbox(lightboxIndex - 1);
+      if (e.key === 'ArrowRight') openLightbox(lightboxIndex + 1);
+    });
+  } catch (e) { /* no-op */ }
+
+  /* ---------- QR enlarge modal ---------- */
+  try {
+    var qrOverlay = document.getElementById('qr-overlay');
+    var qrImg = document.getElementById('qr-modal-img');
+    var qrClose = document.getElementById('qr-close');
+    var qrLastFocused = null;
+    function openQr(src, alt) {
+      qrImg.src = src;
+      qrImg.alt = alt || qrImg.alt;
+      qrLastFocused = document.activeElement;
+      qrOverlay.classList.add('is-open');
+      qrOverlay.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      if (qrClose) qrClose.focus();
+    }
+    function closeQr() {
+      qrOverlay.classList.remove('is-open');
+      qrOverlay.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      if (qrLastFocused && qrLastFocused.focus) qrLastFocused.focus();
+    }
+    var qrTriggers = document.querySelectorAll('.qr-chip img, .proto-qr img, .install-qr img');
+    qrTriggers.forEach(function (img) {
+      img.setAttribute('tabindex', '0');
+      img.setAttribute('role', 'button');
+      img.setAttribute('aria-label', 'Ampliar QR code');
+      img.addEventListener('click', function (e) {
+        // inside an <a>, prevent navigating away from the page
+        e.preventDefault();
+        openQr(img.src, img.alt);
+      });
+      img.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openQr(img.src, img.alt); }
+      });
+    });
+    if (qrClose) qrClose.addEventListener('click', closeQr);
+    if (qrOverlay) qrOverlay.addEventListener('click', function (e) { if (e.target === qrOverlay) closeQr(); });
+    document.addEventListener('keydown', function (e) {
+      if (qrOverlay && qrOverlay.classList.contains('is-open') && e.key === 'Escape') closeQr();
+    });
+  } catch (e) { /* no-op */ }
+
+  /* ---------- Replay chat demo button ---------- */
+  try {
+    var replayBtn = document.getElementById('chat-demo-replay');
+    if (replayBtn) replayBtn.addEventListener('click', playChatDemo);
+  } catch (e) { /* no-op */ }
+
+  /* ---------- Toast ---------- */
+  var toastTimer = null;
+  function showToast(msg) {
+    var t = document.getElementById('toast');
+    if (!t) return;
+    t.textContent = msg;
+    t.classList.add('is-visible');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove('is-visible'); }, 2400);
+  }
+
+  /* ---------- Copy link ---------- */
+  try {
+    var copyBtn = document.getElementById('copy-link-btn');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', function () {
+        var url = 'https://albertomateus9.github.io/VozesLivres/';
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(function () {
+            showToast('Link copiado!');
+          }).catch(function () { showToast('Não foi possível copiar o link.'); });
+        } else {
+          showToast('Copie: ' + url);
+        }
+      });
+    }
+  } catch (e) { /* no-op */ }
+
+  /* ---------- Footer year ---------- */
+  try {
+    var fy = document.getElementById('footer-year');
+    if (fy) fy.textContent = new Date().getFullYear();
+  } catch (e) { /* no-op */ }
+
+})();
 </script>
 
 </body>
