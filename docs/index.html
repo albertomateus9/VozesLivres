@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vozes Livres — espaço seguro, calmo e acolhedor</title>
+<meta name="description" content="Vozes Livres: acolhimento, orientação e segurança para pessoas em situação de vulnerabilidade. Assistente Angel, mapa de pontos de apoio, rede de ONGs e canais de emergência — 100% anônimo, sem login, funciona offline.">
+<link rel="icon" href="assets/icons/Icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-bg: #FBF8F7; --color-surface: #F4ECEB; --color-text: #2D2326;
+    --color-accent: #944D60; --color-accent-2: #7A5966;
+    --color-divider: rgba(45,35,38,0.16);
+    --color-alert: #AE4E52; --color-band: #7D3E4F;
+    --color-accent-100: #F8EAEF; --color-accent-200: #F5E4E8; --color-accent-300: #E4C8D0;
+    --color-accent-700: #7D3E4F; --color-accent-800: #5E2E3B;
+    --font-heading: "Archivo", system-ui, sans-serif; --font-weight-heading: 800;
+    --font-body: "Archivo", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--color-bg); color: var(--color-text);
+    font-family: var(--font-body); font-size: 15px; line-height: 1.55;
+    text-wrap: pretty, optional;
+  }
+  h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: var(--font-weight-heading); line-height: 1.1; letter-spacing: -0.015em; margin: 0; }
+  p { margin: 0; }
+  a { color: var(--color-accent-700); }
+  a:hover { color: var(--color-accent-800); }
+  img { display: block; max-width: 100%; }
+  .kicker { display: block; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-accent-700); margin-bottom: 20px; }
+  .muted { color: rgba(45,35,38,0.78); }
+
+  .btn { display: inline-flex; align-items: center; gap: 10px; white-space: nowrap; text-decoration: none; cursor: pointer; font-family: var(--font-heading); font-weight: var(--font-weight-heading); font-size: 14px; border: 1px solid transparent; border-radius: 12px; padding: 12px 22px; }
+  .btn-primary { background: var(--color-accent); color: var(--color-bg); }
+  .btn-primary:hover { background: var(--color-accent-700); }
+  .btn-ghost { color: var(--color-accent-700); padding-inline: 10px; border-color: transparent; }
+  .btn-ghost:hover { background: var(--color-accent-100); }
+  .btn-ghost-inverse { color: var(--color-bg); border-color: var(--color-bg); }
+  .btn-ghost-inverse:hover { background: rgba(255,255,255,0.12); }
+
+  .nav { display: flex; align-items: center; gap: 24px; padding: 16px clamp(20px, 5vw, 72px); position: sticky; top: 0; z-index: 10; background: var(--color-bg); border-bottom: 2px solid var(--color-divider); flex-wrap: wrap; row-gap: 8px; }
+  .nav-brand { font-family: var(--font-heading); font-weight: var(--font-weight-heading); font-size: 18px; margin-right: auto; }
+  .nav a:not(.btn) { color: inherit; text-decoration: none; font-size: 14px; }
+  .nav a:not(.btn):hover { color: var(--color-accent-700); }
+
+  main { max-width: 1200px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 72px); }
+  section { scroll-margin-top: 72px; }
+  .section-pad { padding: clamp(48px, 7vw, 88px) 0; }
+  .section-divider { border-top: 2px solid var(--color-divider); }
+
+  .grid-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 20px; margin-top: clamp(48px, 6vw, 72px); }
+  .stat-card { background: var(--color-surface); border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 24px; }
+  .stat-title { margin: 0; font-family: var(--font-heading); font-weight: var(--font-weight-heading); font-size: 22px; line-height: 28px; }
+  .stat-sub { margin: 6px 0 0; font-size: 14px; line-height: 20px; color: rgba(45,35,38,0.72); }
+  .stat-source { margin-top: auto; font-size: 12px; line-height: 18px; color: rgba(45,35,38,0.72); }
+
+  .bars { display: flex; align-items: flex-end; gap: 16px; height: 220px; border-bottom: 2px solid var(--color-divider); }
+  .bars > div { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; }
+  .bars .val { font-family: var(--font-heading); font-weight: var(--font-weight-heading); font-size: 16px; }
+  .bars .bar { border-radius: 10px 10px 0 0; background: var(--color-accent-300); }
+  .bars .bar.is-latest { background: var(--color-accent); }
+  .bar-years { display: flex; gap: 16px; margin-top: -14px; }
+  .bar-years span { flex: 1; font-size: 13px; color: rgba(45,35,38,0.72); }
+
+  .waffle { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 6px; max-width: 280px; }
+  .waffle span { aspect-ratio: 1; border-radius: 50%; background: var(--color-accent-300); }
+  .waffle span.on { background: var(--color-accent); }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 13px; }
+  .legend span { display: flex; gap: 8px; align-items: center; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+
+  .hbars { display: flex; flex-direction: column; gap: 16px; }
+  .hbar-row .hbar-top { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; margin-bottom: 6px; }
+  .hbar-track { height: 12px; border-radius: 999px; background: var(--color-accent-200); }
+  .hbar-fill { height: 100%; border-radius: 999px; background: var(--color-accent); }
+
+  .donut { width: min(100%, 220px); aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center; background: conic-gradient(var(--color-accent) 0 91.8%, var(--color-accent-300) 91.8% 100%); }
+  .donut-inner { width: 64%; aspect-ratio: 1; border-radius: 50%; background: var(--color-surface); display: grid; place-items: center; }
+  .donut-inner span { font-family: var(--font-heading); font-weight: var(--font-weight-heading); font-size: clamp(32px, 3.4vw, 42px); letter-spacing: -0.02em; color: var(--color-accent-700); }
+
+  #solucao { display: flex; flex-wrap: wrap; gap: 48px clamp(40px, 6vw, 80px); align-items: center; }
+  #solucao .copy { flex: 1 1 480px; min-width: 0; }
+  #solucao h2 { font-size: clamp(44px, 6.4vw, 88px); margin-top: 20px; }
+  #solucao .lead { font-family: var(--font-heading); font-weight: var(--font-weight-heading); font-size: clamp(22px, 2.4vw, 30px); line-height: 1.25; margin: 16px 0 0; max-width: 24ch; color: var(--color-accent-700); }
+  #solucao .desc { font-size: 17px; line-height: 28px; margin: 20px 0 0; max-width: 48ch; color: rgba(45,35,38,0.8); }
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+  .pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: var(--color-accent-100); color: var(--color-accent-800); font-size: 14px; font-weight: 600; }
+  .cta-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 32px; }
+  .qr-chip { display: inline-flex; gap: 16px; align-items: center; margin-top: 24px; padding: 10px 20px 10px 10px; border-radius: 16px; background: var(--color-surface); text-decoration: none; color: var(--color-text); }
+  .qr-chip:hover { background: var(--color-accent-100); }
+  .qr-chip img { width: 80px; height: 80px; border-radius: 8px; image-rendering: pixelated; }
+  .qr-chip strong { display: block; font-family: var(--font-heading); font-weight: var(--font-weight-heading); font-size: 16px; }
+  .qr-chip span { font-size: 14px; line-height: 20px; }
+  .phone-shot { flex: 0 1 280px; margin: 0; border-radius: 28px; overflow: hidden; border: 6px solid var(--color-text); line-height: 0; }
+  .phone-shot img { width: 100%; height: auto; aspect-ratio: 1080/2340; object-fit: cover; }
+
+  .band { background: var(--color-band); color: var(--color-bg); border-radius: 24px; padding: clamp(28px, 4vw, 44px); display: flex; flex-wrap: wrap; gap: 28px 56px; align-items: center; }
+  .band-chip { background: rgba(255,255,255,0.14); border-radius: 16px; padding: 16px 22px; }
+  .band-chip span { display: block; font-size: 13px; color: var(--color-accent-200, #F5E4E8); }
+  .band-chip p { font-family: var(--font-heading); font-weight: var(--font-weight-heading); font-size: clamp(28px, 3.4vw, 40px); line-height: 1; margin: 6px 0 0; }
+
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 16px; margin-top: 32px; }
+  .feature-card { background: var(--color-surface); border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 10px; }
+  .feature-num { width: 40px; height: 40px; border-radius: 12px; background: var(--color-accent); color: var(--color-bg); display: grid; place-items: center; font-family: var(--font-heading); font-weight: var(--font-weight-heading); font-size: 14px; }
+  .feature-card h3 { margin-top: 8px; font-size: 19px; line-height: 24px; }
+  .feature-card p { font-size: 15px; line-height: 22px; color: rgba(45,35,38,0.78); }
+
+  #prototipo-section { display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start; }
+  .proto-frame-wrap { flex: 1 1 320px; min-width: 0; }
+  .proto-browser { border-radius: 20px; overflow: hidden; border: 1px solid var(--color-divider); box-shadow: 0 12px 32px rgba(45,35,38,0.14); background: var(--color-surface); }
+  .proto-browser-bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--color-surface); }
+  .proto-browser-bar .dots { display: flex; gap: 6px; }
+  .proto-browser-bar .dots span { width: 10px; height: 10px; border-radius: 50%; background: var(--color-accent-300); display: block; }
+  .proto-browser-bar .url { flex: 1; font-size: 12px; background: var(--color-bg); border-radius: 999px; padding: 6px 12px; color: rgba(45,35,38,0.72); text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #proto-iframe { display: block; width: 100%; height: 720px; border: 0; background: var(--color-bg); }
+  .proto-side { flex: 0 1 300px; display: flex; flex-direction: column; gap: 16px; }
+  .proto-note { background: var(--color-surface); border-radius: 20px; padding: 24px; font-size: 14px; line-height: 22px; color: rgba(45,35,38,0.8); }
+  .proto-note strong { display: block; font-family: var(--font-heading); font-weight: var(--font-weight-heading); font-size: 17px; color: var(--color-text); margin-bottom: 8px; }
+  .proto-qr { background: var(--color-surface); border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 14px; }
+  .proto-qr img { width: 100%; max-width: 160px; aspect-ratio: 1; border-radius: 12px; image-rendering: pixelated; margin: 0 auto; }
+  .proto-qr p { font-family: var(--font-heading); font-weight: var(--font-weight-heading); font-size: 16px; text-align: center; }
+
+  .screens-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 160px), 1fr)); gap: 32px 20px; margin-top: 32px; }
+  .screens-grid figure { margin: 0; display: flex; flex-direction: column; gap: 12px; }
+  .screen-frame { border-radius: 20px; overflow: hidden; border: 4px solid var(--color-text); line-height: 0; }
+  .screen-frame img { width: 100%; height: auto; aspect-ratio: 1080/2340; object-fit: cover; }
+  figcaption { font-family: var(--font-heading); font-weight: var(--font-weight-heading); font-size: 15px; line-height: 20px; }
+
+  .hotlines-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 12px; margin-top: 32px; }
+  .hotline { background: var(--color-surface); border-radius: 20px; padding: 24px; text-decoration: none; color: var(--color-text); display: flex; flex-direction: column; gap: 10px; min-height: 140px; }
+  .hotline:hover { background: var(--color-accent-200); }
+  .hotline .num { font-family: var(--font-heading); font-weight: var(--font-weight-heading); font-size: clamp(44px, 4.6vw, 60px); line-height: 1; letter-spacing: -0.02em; color: var(--color-alert); }
+  .hotline .name { font-family: var(--font-heading); font-weight: var(--font-weight-heading); font-size: 16px; margin-top: auto; }
+
+  #instalar { display: flex; flex-wrap: wrap; gap: 40px clamp(32px, 5vw, 80px); align-items: flex-start; }
+  #instalar .copy { flex: 1 1 420px; min-width: 0; }
+  .steps { list-style: none; margin: 28px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+  .steps li { display: flex; gap: 16px; align-items: center; font-size: 16px; line-height: 24px; }
+  .steps .step-num { flex: none; width: 36px; height: 36px; border-radius: 50%; background: var(--color-accent-100); color: var(--color-accent-800); display: grid; place-items: center; font-family: var(--font-heading); font-weight: var(--font-weight-heading); font-size: 15px; }
+  details { margin-top: 32px; background: var(--color-surface); border-radius: 16px; padding: 16px 20px; }
+  summary { cursor: pointer; font-family: var(--font-heading); font-weight: var(--font-weight-heading); font-size: 16px; }
+  pre { margin: 16px 0 4px; background: var(--color-text); color: var(--color-bg); border-radius: 12px; padding: 20px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; line-height: 22px; overflow-x: auto; }
+  .install-qr { flex: 0 1 300px; background: var(--color-surface); border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 16px; }
+  .install-qr img { width: 100%; max-width: 244px; aspect-ratio: 1; border-radius: 12px; image-rendering: pixelated; }
+  .install-qr p { font-family: var(--font-heading); font-weight: var(--font-weight-heading); font-size: 20px; }
+
+  .closing { background: var(--color-accent); color: var(--color-bg); }
+  .closing-inner { max-width: 1200px; margin: 0 auto; padding: clamp(64px, 8vw, 96px) clamp(20px, 5vw, 72px); }
+  .closing h2 { font-size: clamp(40px, 5.6vw, 76px); line-height: 1.04; letter-spacing: -0.02em; }
+
+  footer { max-width: 1200px; margin: 0 auto; padding: 32px clamp(20px, 5vw, 72px); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 32px; font-size: 14px; color: rgba(45,35,38,0.72); }
+  footer .links { display: flex; gap: 20px; }
+
+  @media (max-width: 640px) {
+    #proto-iframe { height: 560px; }
+  }
+  @media (max-width: 900px) {
+    section { scroll-margin-top: 170px; }
+  }
+  @media (max-width: 480px) {
+    section { scroll-margin-top: 200px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="nav-brand">Vozes Livres</span>
+  <a href="#problema">O problema</a>
+  <a href="#solucao">A solução</a>
+  <a href="#prototipo">Protótipo</a>
+  <a href="#emergencia">Emergência</a>
+  <a href="#instalar">Instalar</a>
+  <a class="btn btn-primary" href="https://github.com/albertomateus9/VozesLivres/releases/download/v1.1.0/VozesLivres-v1.1.0.apk">Baixar APK</a>
+</nav>
+
+<main>
+
+  <section id="problema" class="section-pad">
+    <span class="kicker">O problema</span>
+    <h1 style="font-size: clamp(40px, 6.4vw, 88px); margin: 0 0 0 -0.04em; max-width: 16ch;">21,4 milhões de brasileiras sofreram violência no último ano.</h1>
+
+    <div style="margin-top: clamp(32px, 4vw, 48px); height: 28px; border-radius: 999px; background: var(--color-accent-300); display: flex; overflow: hidden;">
+      <div style="width: 37.5%; background: var(--color-accent); border-radius: 999px;"></div>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; margin-top: 12px; font-size: 14px; line-height: 20px;">
+      <span><strong style="font-family: var(--font-heading); font-weight: var(--font-weight-heading); color: var(--color-accent-700);">37,5%</strong> das mulheres com 16 anos ou mais · recorde da série</span>
+      <span class="muted">FBSP / Datafolha, Visível e Invisível (2025)</span>
+    </div>
+
+    <div class="grid-stats">
+      <figure class="stat-card">
+        <figcaption>
+          <p class="stat-title">Feminicídios batem recorde</p>
+          <p class="stat-sub">Vítimas por ano · 4,3 por dia em 2025</p>
+        </figcaption>
+        <div class="bars">
+          <div><span class="val">449</span><div class="bar" style="height: 23.4%;"></div></div>
+          <div><span class="val">1.467</span><div class="bar" style="height: 76.5%;"></div></div>
+          <div><span class="val">1.504</span><div class="bar" style="height: 78.4%;"></div></div>
+          <div><span class="val">1.571</span><div class="bar is-latest" style="height: 82%;"></div></div>
+        </div>
+        <div class="bar-years"><span>2015</span><span>2023</span><span>2024</span><span>2025</span></div>
+        <p class="stat-source">FBSP, Anuário Brasileiro de Segurança Pública (2025 e 2026)</p>
+      </figure>
+
+      <figure class="stat-card">
+        <figcaption>
+          <p class="stat-title">8 em cada 10 autores eram parceiros ou ex</p>
+          <p class="stat-sub">79,8% dos feminicídios com autoria identificada</p>
+        </figcaption>
+        <div class="waffle" id="waffle"></div>
+        <div class="legend">
+          <span><span class="dot" style="background: var(--color-accent);"></span>Parceiro ou ex-parceiro</span>
+          <span><span class="dot" style="background: var(--color-accent-300);"></span>Outros</span>
+        </div>
+        <p class="stat-source">FBSP, 20º Anuário Brasileiro de Segurança Pública (2026)</p>
+      </figure>
+
+      <figure class="stat-card">
+        <figcaption>
+          <p class="stat-title">O que elas sofreram</p>
+          <p class="stat-sub">% das brasileiras, últimos 12 meses</p>
+        </figcaption>
+        <div class="hbars">
+          <div class="hbar-row"><div class="hbar-top"><span>Insultos e humilhações</span><strong>31,4%</strong></div><div class="hbar-track"><div class="hbar-fill" style="width: 78.5%;"></div></div></div>
+          <div class="hbar-row"><div class="hbar-top"><span>Agressão física</span><strong>16,9%</strong></div><div class="hbar-track"><div class="hbar-fill" style="width: 42.3%;"></div></div></div>
+          <div class="hbar-row"><div class="hbar-top"><span>Perseguição (stalking)</span><strong>16%</strong></div><div class="hbar-track"><div class="hbar-fill" style="width: 40%;"></div></div></div>
+          <div class="hbar-row"><div class="hbar-top"><span>Violência sexual</span><strong>11%</strong></div><div class="hbar-track"><div class="hbar-fill" style="width: 27.5%;"></div></div></div>
+          <div class="hbar-row"><div class="hbar-top"><span>Divulgação de fotos íntimas</span><strong>4%</strong></div><div class="hbar-track"><div class="hbar-fill" style="width: 10%;"></div></div></div>
+        </div>
+        <p class="stat-source">FBSP / Datafolha, Visível e Invisível, 5ª ed. (2025)</p>
+      </figure>
+
+      <figure class="stat-card">
+        <figcaption>
+          <p class="stat-title">Quase sempre havia testemunhas</p>
+          <p class="stat-sub">Casos de violência presenciados por outras pessoas</p>
+        </figcaption>
+        <div class="donut"><div class="donut-inner"><span>91,8%</span></div></div>
+        <p class="stat-source">FBSP / Datafolha, Visível e Invisível, 5ª ed. (2025)</p>
+      </figure>
+    </div>
+  </section>
+
+  <section id="solucao" class="section-pad section-divider">
+    <div class="copy">
+      <span class="kicker">A solução</span>
+      <h2>Vozes Livres</h2>
+      <p class="lead">Você está em um espaço seguro, calmo e acolhedor.</p>
+      <p class="desc">Fale de forma anônima, receba apoio e encontre ajuda perto de você.</p>
+      <div class="pills">
+        <span class="pill">✓ Sem login</span>
+        <span class="pill">✓ 100% anônimo</span>
+        <span class="pill">✓ Funciona offline</span>
+        <span class="pill">✓ Gratuito</span>
+      </div>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://github.com/albertomateus9/VozesLivres/releases/download/v1.1.0/VozesLivres-v1.1.0.apk">Baixar para Android ⭳</a>
+        <a class="btn btn-ghost" href="https://github.com/albertomateus9/VozesLivres">Código no GitHub ↗</a>
+        <a class="btn btn-ghost" href="#prototipo">Testar no navegador →</a>
+      </div>
+      <a class="qr-chip" href="#instalar">
+        <img src="assets/qr-apk.png" alt="QR Code para baixar o APK">
+        <span><strong>Escaneie para baixar</strong>Aponte a câmera do celular</span>
+      </a>
+    </div>
+    <figure class="phone-shot">
+      <img src="assets/images/01_tela_entrada.png" alt="Tela de entrada do Vozes Livres">
+    </figure>
+  </section>
+
+  <section class="section-pad" style="padding-top: 0;">
+    <div class="band">
+      <div style="flex: 1 1 320px;">
+        <span class="kicker" style="color: var(--color-accent-200);">Apresentação na nossa escola</span>
+        <p style="font-family: var(--font-heading); font-weight: var(--font-weight-heading); font-size: clamp(28px, 3.6vw, 44px); line-height: 1.05; letter-spacing: -0.015em; margin-top: 12px;">EETEPA Vilhena Alves</p>
+      </div>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <div class="band-chip"><span>Dia</span><p>18/11</p></div>
+        <div class="band-chip"><span>A partir de</span><p>08:30</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="funcionalidades" class="section-pad" style="padding-top: 0;">
+    <h2 style="font-size: clamp(30px, 3.4vw, 44px);">O que você encontra</h2>
+    <div class="features-grid">
+      <div class="feature-card"><span class="feature-num">01</span><h3>Assistente Angel</h3><p>Escuta sigilosa e orientação, mesmo offline.</p></div>
+      <div class="feature-card"><span class="feature-num">02</span><h3>Mapa de apoio</h3><p>Delegacias, hospitais e postos de saúde perto de você.</p></div>
+      <div class="feature-card"><span class="feature-num">03</span><h3>Rede de apoio</h3><p>ONGs e serviços com discagem em um toque.</p></div>
+      <div class="feature-card"><span class="feature-num">04</span><h3>Emergência</h3><p>100, 180, 190, 192 e 188 a um toque.</p></div>
+      <div class="feature-card"><span class="feature-num">05</span><h3>Privacidade</h3><p>Sem cadastro. Seus dados ficam no aparelho.</p></div>
+    </div>
+  </section>
+
+  <section id="prototipo" class="section-pad section-divider">
+    <span class="kicker">Protótipo funcional</span>
+    <h2 style="font-size: clamp(30px, 3.4vw, 44px); margin-bottom: 8px;">Experimente agora, direto no navegador</h2>
+    <p class="muted" style="max-width: 60ch; margin-bottom: 32px;">Esta é a mesma versão web do aplicativo, publicada automaticamente a partir do código-fonte. Interaja com ela aqui mesmo, sem instalar nada.</p>
+    <div id="prototipo-section">
+      <div class="proto-frame-wrap">
+        <div class="proto-browser">
+          <div class="proto-browser-bar">
+            <span class="dots"><span></span><span></span><span></span></span>
+            <span class="url">albertomateus9.github.io/VozesLivres/app/</span>
+            <a class="btn btn-ghost" href="app/" target="_blank" rel="noopener" style="padding: 4px 10px; font-size: 12px;">Abrir em nova aba ↗</a>
+          </div>
+          <iframe id="proto-iframe" src="app/" title="Vozes Livres — protótipo funcional (versão web)" loading="lazy" allow="geolocation; clipboard-read; clipboard-write"></iframe>
+        </div>
+      </div>
+      <div class="proto-side">
+        <div class="proto-note">
+          <strong>Como testar</strong>
+          Use o menu lateral para navegar entre o chat da Angel, o mapa de pontos de apoio e a rede de ONGs. Alguns recursos do aparelho (como discagem direta e localização precisa) funcionam de forma limitada dentro do navegador, comparado ao app instalado.
+        </div>
+        <div class="proto-qr">
+          <img src="assets/qr-apk.png" alt="QR Code para baixar o APK do Vozes Livres">
+          <p>Prefere no celular?<br>Baixe o APK</p>
+          <a class="btn btn-primary" style="justify-content: center;" href="https://github.com/albertomateus9/VozesLivres/releases/download/v1.1.0/VozesLivres-v1.1.0.apk">Baixar APK v1.1.0</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="telas" class="section-pad section-divider">
+    <h2 style="font-size: clamp(30px, 3.4vw, 44px);">Telas do aplicativo</h2>
+    <div class="screens-grid">
+      <figure><div class="screen-frame"><img src="assets/images/01_tela_entrada.png" alt="Entrada direta" loading="lazy"></div><figcaption>Entrada direta</figcaption></figure>
+      <figure><div class="screen-frame"><img src="assets/images/02_tela_home.png" alt="Painel inicial" loading="lazy"></div><figcaption>Painel inicial</figcaption></figure>
+      <figure><div class="screen-frame"><img src="assets/images/03_tela_mapa.png" alt="Mapa de apoio" loading="lazy"></div><figcaption>Mapa de apoio</figcaption></figure>
+      <figure><div class="screen-frame"><img src="assets/images/04_tela_ajuda_ongs.png" alt="Rede de apoio" loading="lazy"></div><figcaption>Rede de apoio</figcaption></figure>
+      <figure><div class="screen-frame"><img src="assets/images/05_tela_chat.png" alt="Conversa com a Angel" loading="lazy"></div><figcaption>Conversa com a Angel</figcaption></figure>
+      <figure><div class="screen-frame"><img src="assets/images/07_tela_alertas.png" alt="Emergência" loading="lazy"></div><figcaption>Emergência</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="emergencia" class="section-pad section-divider">
+    <h2 style="font-size: clamp(30px, 3.4vw, 44px); margin-bottom: 8px;">Precisa de ajuda agora? Ligue.</h2>
+    <p class="muted" style="margin-bottom: 0;">Gratuito, em todo o Brasil. Toque para discar.</p>
+    <div class="hotlines-grid">
+      <a class="hotline" href="tel:100"><span class="num">100</span><span class="name">Direitos Humanos</span></a>
+      <a class="hotline" href="tel:180"><span class="num">180</span><span class="name">Central da Mulher</span></a>
+      <a class="hotline" href="tel:190"><span class="num">190</span><span class="name">Polícia Militar</span></a>
+      <a class="hotline" href="tel:192"><span class="num">192</span><span class="name">SAMU</span></a>
+      <a class="hotline" href="tel:188"><span class="num">188</span><span class="name">CVV</span></a>
+    </div>
+  </section>
+
+  <section id="instalar" class="section-pad section-divider">
+    <div class="copy">
+      <h2 style="font-size: clamp(30px, 3.4vw, 44px); margin-bottom: 28px;">Instale em 4 passos</h2>
+      <ol class="steps">
+        <li><span class="step-num">1</span><span>Baixe o APK.</span></li>
+        <li><span class="step-num">2</span><span>Abra o arquivo no celular.</span></li>
+        <li><span class="step-num">3</span><span>Se pedir, permita instalar desta fonte.</span></li>
+        <li><span class="step-num">4</span><span>Abra o app e entre, sem cadastro.</span></li>
+      </ol>
+      <div class="cta-row" style="margin-top: 28px;">
+        <a class="btn btn-primary" href="https://github.com/albertomateus9/VozesLivres/releases/download/v1.1.0/VozesLivres-v1.1.0.apk">Baixar APK v1.1.0</a>
+        <a class="btn btn-ghost" href="https://github.com/albertomateus9/VozesLivres/releases/latest">Todas as versões</a>
+      </div>
+      <details>
+        <summary>Para desenvolvedores (Flutter)</summary>
+        <pre>git clone https://github.com/albertomateus9/VozesLivres.git
+cd VozesLivres
+flutter pub get
+flutter run
+flutter build apk --release</pre>
+      </details>
+    </div>
+    <div class="install-qr">
+      <img src="assets/qr-apk.png" alt="QR Code para baixar o APK do Vozes Livres">
+      <p>Aponte a câmera para baixar</p>
+    </div>
+  </section>
+
+</main>
+
+<section class="closing">
+  <div class="closing-inner">
+    <h2>Você não está sozinha.</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px;">
+      <a class="btn btn-ghost-inverse" href="https://github.com/albertomateus9/VozesLivres/releases/download/v1.1.0/VozesLivres-v1.1.0.apk">Baixar o Vozes Livres</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>Projeto Cultura de Paz, Ciência e Tecnologia · EETEPA Vilhena Alves</span>
+  <span class="links">
+    <a href="https://github.com/albertomateus9/VozesLivres">GitHub</a>
+    <a href="https://github.com/albertomateus9/VozesLivres/blob/main/LICENSE">Licença</a>
+  </span>
+</footer>
+
+<script>
+  // Waffle chart: 80 of 100 dots highlighted (79.8%, rounded for the grid)
+  (function () {
+    var w = document.getElementById('waffle');
+    for (var i = 0; i < 100; i++) {
+      var s = document.createElement('span');
+      if (i < 80) s.className = 'on';
+      w.appendChild(s);
+    }
+  })();
+</script>
+
+</body>
+</html>

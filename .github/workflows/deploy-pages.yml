@@ -31,8 +31,31 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build web release
-        run: flutter build web --release --base-href /VozesLivres/
+      - name: Build functional prototype (Flutter Web)
+        run: flutter build web --release --base-href /VozesLivres/app/
+
+      - name: Assemble Pages site (landing page + embedded prototype)
+        run: |
+          set -e
+          rm -rf site
+          mkdir -p site/assets/images site/assets/icons site/app
+
+          # Landing page (design) + its own small assets (e.g. QR code)
+          cp -r docs/. site/
+
+          # Screenshots used by the landing page, sourced from the Flutter assets
+          cp assets/images/readme_images/01_tela_entrada.png site/assets/images/
+          cp assets/images/readme_images/02_tela_home.png site/assets/images/
+          cp assets/images/readme_images/03_tela_mapa.png site/assets/images/
+          cp assets/images/readme_images/04_tela_ajuda_ongs.png site/assets/images/
+          cp assets/images/readme_images/05_tela_chat.png site/assets/images/
+          cp assets/images/readme_images/07_tela_alertas.png site/assets/images/
+
+          # Favicon, also sourced from the Flutter web assets
+          cp web/icons/Icon-192.png site/assets/icons/
+
+          # Functional prototype (Flutter Web build), embedded as /app/ inside the site
+          cp -r build/web/. site/app/
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -40,7 +63,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: build/web
+          path: site
 
   deploy:
     needs: build
