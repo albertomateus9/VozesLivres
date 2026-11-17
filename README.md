@@ -1,11 +1,19 @@
 # Vozes Livres 🛡️
 
+[![Dart & Flutter CI](https://github.com/albertomateus9/VozesLivres/actions/workflows/dart.yml/badge.svg)](https://github.com/albertomateus9/VozesLivres/actions/workflows/dart.yml)
+[![Deploy Web (GitHub Pages)](https://github.com/albertomateus9/VozesLivres/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/albertomateus9/VozesLivres/actions/workflows/deploy-pages.yml)
+[![Latest Release](https://img.shields.io/github/v/release/albertomateus9/VozesLivres?label=release)](https://github.com/albertomateus9/VozesLivres/releases/latest)
+[![License](https://img.shields.io/github/license/albertomateus9/VozesLivres)](LICENSE)
+
 **Vozes Livres** é um aplicativo mobile desenvolvido para oferecer acolhimento, orientação e segurança a pessoas em situação de vulnerabilidade, vítimas de violência de gênero, abusos, agressões ou experiências traumáticas. O projeto combina **Cultura de Paz, Ciência e Tecnologia** para proporcionar um refúgio seguro e confidencial.
+
+🔗 **Demo online (GitHub Pages):** [albertomateus9.github.io/VozesLivres](https://albertomateus9.github.io/VozesLivres/)
 
 ---
 
 ## 📌 Sumário
 - [Download do Aplicativo (APK)](#-download-do-aplicativo-apk)
+- [Versão Web (Demo Online)](#-versão-web-demo-online)
 - [Visão Geral](#-visão-geral)
 - [Principais Funcionalidades](#-principais-funcionalidades)
 - [Telas e Demonstração do Aplicativo](#-telas-e-demonstração-do-aplicativo)
@@ -31,6 +39,16 @@ Você pode baixar e instalar a versão estável mais recente (`v1.1.0`) diretame
 2. Abra o arquivo baixado no aparelho.
 3. Se o Android solicitar, habilite **"Permitir desta fonte"** / **"Fontes desconhecidas"** para concluir a instalação.
 4. Pronto! Abra o app **Vozes Livres** e acesse diretamente — sem necessidade de login, senha ou cadastro.
+
+---
+
+## 🌐 Versão Web (Demo Online)
+
+Além do APK para Android, o **Vozes Livres** também é publicado automaticamente como uma versão web (Flutter Web) via **GitHub Pages**, sem necessidade de instalação:
+
+- 🌍 **[Acessar a versão web](https://albertomateus9.github.io/VozesLivres/)**
+
+A cada atualização enviada para a branch `main`, um workflow de GitHub Actions ([`deploy-pages.yml`](.github/workflows/deploy-pages.yml)) gera o build de produção (`flutter build web`) e publica o resultado automaticamente no GitHub Pages. Algumas funcionalidades que dependem de recursos nativos do aparelho (como discagem direta de telefone) podem ter comportamento limitado no navegador em comparação ao aplicativo instalado.
 
 ---
 
@@ -129,6 +147,13 @@ Para executar testes e gerar um novo APK de release:
 flutter analyze
 flutter test
 flutter build apk --release
+```
+
+Para gerar a versão web localmente (a mesma publicada no GitHub Pages):
+
+```bash
+flutter config --enable-web
+flutter build web --release --base-href /VozesLivres/
 ```
 
 ---
